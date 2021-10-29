@@ -17,7 +17,7 @@ class Window:
         self.height = height
         self.audio = pygame.mixer.music.load(os.path.join("Assets", audio))
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background = pygame.image.load(os.path.join("Assets", background))
+        self.background = pygame.transform.scale(pygame.image.load(os.path.join("Assets", background)),(self.width,self.height))
         self.objects = []
 
     def get_size(self):
@@ -99,8 +99,23 @@ class Mobs:
 
 
 class Road:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, x, y, type, width, height, texture = 'green_square.png') -> None:
+        self.x = x
+        self.y = y
+        self.type = type
+        self.width = width
+        self.height = height
+        self.texture = pygame.transform.scale(pygame.image.load(os.path.join('Assets', texture)), (self.width, self.height))
+        self.body = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
+
+    def get_image(self):
+        return self.texture
 
 
 class Items:
@@ -127,4 +142,8 @@ if __name__ == "__main__":
                     menu.play_audio("stop")
                 if event.key == pygame.K_p:
                     menu.play_audio("play")
+                if event.key == pygame.K_LEFT:
+                    menu.move_background(10)
+                if event.key == pygame.K_RIGHT:
+                    menu.move_background(-10)
         menu.update_screen()
