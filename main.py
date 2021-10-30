@@ -121,6 +121,17 @@ class Player:
 
     def fall(self):
         self.y += 5
+    
+    def jump(self):
+        if self.state == 'Wolf':
+            delta = 150
+            while delta > 0:
+                self.y -= 15
+                pygame.time.delay(10)
+                delta -= 15
+                menu.update_screen(objects)
+        elif self.state == 'Human':
+            self.y -= 50
 
 
 class Human(Player):
@@ -250,6 +261,15 @@ class Road:
     def get_rigid(self):
         return self.rigid
 
+    def move_road(self, vel):
+        """Implementation of parallax effect, moves bg instead of player
+
+        Args:
+            vel (int): player's velocity
+        """
+        self.x -= vel
+        self.rigid = self.rigid.move(-1 * vel, 0)
+
 
 # class Items:
 #     def __init__(self) -> None:
@@ -275,8 +295,12 @@ if __name__ == "__main__":
     player = Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
-    soil = Road(100, 500, "ground", 100, 100)
-    objects.append(soil)
+    soil1 = Road(100, 500, "ground", 300, 100)
+    soil2 = Road(300, 400, 'ground', 300, 100)
+    objects.append(soil1)
+    objects.append(soil2)
+    objects_unmoveable = objects.copy()
+    objects_unmoveable.remove(player)
     clock = pygame.time.Clock()
     while running:
         clock.tick(60)
@@ -289,15 +313,26 @@ if __name__ == "__main__":
                 if event.key == pygame.K_p:
                     menu.play_audio("play")
                 if event.key == pygame.K_LEFT:
-                    menu.move_background(10)
-                if event.key == pygame.K_RIGHT:
                     menu.move_background(-10)
+                    for object in objects_unmoveable:
+                        object.move_road(-10)
+                        object.get_rigid().move(-10, 0)
+                if event.key == pygame.K_RIGHT:
+                    menu.move_background(10)
+                    for object in objects_unmoveable:
+                        object.move_road(10)
+                        object.get_rigid().move(10, 0)
+                if event.key == pygame.K_UP:
+                    if stand == 1:
+                        player.jump()
+                        menu.update_screen(objects)
+                        stand = 0
         for entity in moveable:
             menu.update_screen(objects)
             # physics.gravity(entity, objects)
             stand = 0
-            objects1 = objects.copy()
-            objects1.remove(entity)
+            # objects_unmoveable = objects.copy()
+            # objects_unmoveable.remove(entity)
 
             while stand == 0:
                 support1 = (entity.get_x() + 1, entity.get_y() + entity.height)
@@ -305,8 +340,8 @@ if __name__ == "__main__":
                     entity.get_x() + entity.width - 1,
                     entity.get_y() + entity.height,
                 )
-                print(support1)
-                for object in objects1:
+                #print(support1)
+                for object in objects_unmoveable:
                     if object.get_rigid().collidepoint(
                         support1
                     ) or object.get_rigid().collidepoint(support2):
@@ -315,4 +350,5 @@ if __name__ == "__main__":
                     entity.fall()
                     pygame.time.delay(5)
                     menu.update_screen(objects)
+            
         menu.update_screen(objects)
