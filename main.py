@@ -94,6 +94,7 @@ class Player:
         self.state = state
         self.x = x
         self.y = y
+        self.direction = None
 
     def change_health(self, change):
         """changes player's health
@@ -124,14 +125,32 @@ class Player:
     def fall(self):
         self.y += 5
 
-    def jump(self):
-        if self.state == "Wolf":
+    def jump(self, objects_unmoveable):
+        if self.state == 'Wolf':
             delta = 150
-            while delta > 0:
-                self.y -= 15
-                pygame.time.delay(15)
-                delta -= 15
-                menu.update_screen(objects)
+            starting_y = self.y
+            if self.direction == 'right':
+                t = 0
+                while delta > 0:
+                    self.y = starting_y + (1 * t * (t - 20))
+                    t += 1
+                    menu.move_background(10)
+                    for object in objects_unmoveable:
+                        object.move_road(15)
+                    pygame.time.delay(15)
+                    delta -= 15
+                    menu.update_screen(objects)
+            elif self.direction == 'left':
+                t = 0
+                while delta > 0:
+                    self.y = starting_y + (1 * t * (t - 20))
+                    t += 1
+                    menu.move_background(-10)
+                    for object in objects_unmoveable:
+                        object.move_road(-15)
+                    pygame.time.delay(15)
+                    delta -= 15
+                    menu.update_screen(objects)
         elif self.state == 'Human':
             self.y -= 5
         
@@ -140,12 +159,14 @@ class Player:
             if keys_pressed[pygame.K_RIGHT]:
                 pygame.time.delay(15)
                 menu.move_background(10)
+                self.direction = 'right'
                 for object in objects_unmoveable:
                     object.move_road(10)
             
             if keys_pressed[pygame.K_LEFT]:
                 pygame.time.delay(15)
                 menu.move_background(-10)
+                self.direction = 'left'
                 for object in objects_unmoveable:
                     object.move_road(-10)
                                  
@@ -335,7 +356,7 @@ class Button:
 """Game's starting session"""
 if __name__ == "__main__":
     pygame.init()
-    menu = Window(1920, 1080, "Oles.mp3", "space.png")
+    menu = Window(1920, 1080, "Beholder.mp3", "space.png")
     menu.play_audio("start")
     running = True
     objects = []
@@ -343,8 +364,8 @@ if __name__ == "__main__":
     player = Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
-    soil1 = Road(100, 500, "ground", 300, 100)
-    soil2 = Road(300, 400, "ground", 300, 100)
+    soil1 = Road(100, 500, "ground", 5000, 50)
+    soil2 = Road(300, 400, "ground", 100, 100)
     objects.append(soil1)
     objects.append(soil2)
     objects_unmoveable = objects.copy()
@@ -361,21 +382,12 @@ if __name__ == "__main__":
                     menu.play_audio("stop")
                 if event.key == pygame.K_p:
                     menu.play_audio("play")
-                if event.key == pygame.K_LEFT:
-                    menu.move_background(-10)
-                    for object in objects_unmoveable:
-                        object.move_road(-10)
-                        object.get_rigid().move(-10, 0)
-                if event.key == pygame.K_RIGHT:
-                    menu.move_background(10)
-                    for object in objects_unmoveable:
-                        object.move_road(10)
-                        object.get_rigid().move(10, 0)
                 if event.key == pygame.K_UP:
                     if stand == 1:
-                        player.jump()
-                        menu.update_screen(objects)
                         stand = 0
+                        player.jump(objects_unmoveable)
+                        menu.update_screen(objects)
+                        
         for entity in moveable:
             menu.update_screen(objects)
             # physics.gravity(entity, objects)
@@ -397,7 +409,12 @@ if __name__ == "__main__":
                         stand += 1
                 if stand == 0:
                     entity.fall()
-                    pygame.time.delay(5)
+                    if entity.direction == 'right':
+                        entity.x += 5
+                        pygame.time.delay(15)
+                    if entity.direction == 'left':
+                        entity.x -= 5
+                        pygame.time.delay(15)
                     menu.update_screen(objects)
             
         keys_pressed = pygame.key.get_pressed()
