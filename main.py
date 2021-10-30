@@ -186,6 +186,12 @@ class Wolf(Player):
     def get_rigid(self):
         return self.rigid
 
+    def get_width(self):
+        return self.width
+
+    def get_height(self):
+        return self.height
+
 
 class Story:
     def __init__(self) -> None:
@@ -300,10 +306,10 @@ if __name__ == "__main__":
             objects1.remove(entity)
 
             while stand == 0:
-                support1 = (entity.get_x() + 1, entity.get_y() + entity.height)
+                support1 = (entity.get_x() + 1, entity.get_y() + entity.get_height())
                 support2 = (
-                    entity.get_x() + entity.width - 1,
-                    entity.get_y() + entity.height,
+                    entity.get_x() + entity.get_width() - 1,
+                    entity.get_y() + entity.get_height(),
                 )
                 print(support1)
                 for object in objects1:
