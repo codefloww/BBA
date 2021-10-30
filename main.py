@@ -155,6 +155,14 @@ class Player:
                     pygame.time.delay(15)
                     delta -= 15
                     screen.update_screen(objects)
+            elif self.direction == None:
+                t = 0
+                while delta > 0:
+                    self.y = starting_y + (1 * t * (t - 20))
+                    t += 1
+                    pygame.time.delay(15)
+                    delta -= 15
+                    screen.update_screen(objects)
         elif self.state == 'Human':
             self.y -= 5
 

@@ -9,7 +9,7 @@ def stage():
     running = True
     objects = []
     moveable = []  # Each moveable object, basically mobs and player
-    player = main.Wolf(100, 100, 100, 10, "Wolf")
+    player = main.Wolf(800, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
     soil1 = main.Road(100, 500, "ground", 5000, 50)
@@ -33,13 +33,13 @@ def stage():
 
         for entity in moveable:
             stage1.update_screen(objects)
-            # physics.gravity(entity, objects)
             stand = 0
             objects_unmoveable = objects.copy()
             objects_unmoveable.remove(entity)
 
             while stand == 0:
-                stand = physics.gravity(entity, objects)
+                stand = physics.gravity(entity, objects, stage1)
+                player.direction = None
                 stage1.update_screen(objects)
         keys_pressed = pygame.key.get_pressed()
         player.movement_handle(keys_pressed, objects, stand, stage1)
