@@ -5,7 +5,7 @@ import os
 
 def menu():
     pygame.mixer.init()
-    main_menu = main.Window(1920, 1080, "Oles.mp3", "space.png")
+    main_menu = main.Window(1920, 1080, "Enter.mp3", "space.png")
     main_menu.play_audio("start")
     running = True
     objects = []

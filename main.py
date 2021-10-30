@@ -1,6 +1,8 @@
 """module that maintains full game"""
 import time
 import os
+
+from pygame import font
 import main_window
 import stage1
 import stage2
@@ -20,7 +22,8 @@ class Window:
             width (int)
             height (int)
             audio (str): name of the audio file in Assets directory
-            background (str): name of the background image file in Assets directory
+            background (str): name of the background image file in Assets
+            directory
         """
         self.x = 0
         self.y = 0
@@ -28,10 +31,7 @@ class Window:
         self.height = height
         self.audio = pygame.mixer.music.load(os.path.join("Assets", audio))
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", background)),
-            (self.width, self.height),
-        )
+        self.background = pygame.image.load(os.path.join("Assets", background))
 
     def get_size(self):
         """
@@ -201,9 +201,10 @@ class Player:
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
                 if stand == 1:
-                        stand = 0
-                        self.jump(objects,screen)
-                        screen.update_screen(objects)
+                    stand = 0
+                    self.jump(objects, screen)
+                    screen.update_screen(objects)
+
 
 class Human(Player):
     """class to specify human's part of the main charecter
@@ -279,6 +280,15 @@ class Wolf(Player):
     def get_height(self):
         return self.height
 
+    def move_road(self, vel):
+        """Implementation of parallax effect, moves bg instead of player
+
+        Args:
+            vel (int): player's velocity
+        """
+        self.x -= vel
+        self.rigid = self.rigid.move(-1 * vel, 0)
+
 
 class Story:
     def __init__(self) -> None:
@@ -302,7 +312,8 @@ class Road:
             type (str): type of road
             width (int): width of road
             height (int): height of block
-            texture (str, optional): name of texture's file in Assets directory. Defaults to 'green_square.png'.
+            texture (str, optional): name of texture's file in Assets
+            directory. Defaults to 'green_square.png'.
         """
         self.x = x
         self.y = y
@@ -394,6 +405,43 @@ class Button:
         return self.caption
 
 
+class Dialog:
+    def __init__(self, kind, back='Assets/red_square.png'):
+        if kind == 0:
+            self.width = 100
+            self.height = 50
+        if kind == 1:
+            self.width = 1300
+            self.height = 600
+        self.texture = pygame.Surface((self.width, self.height))
+        self.texture = pygame.transform.scale(
+            pygame.image.load(back), (self.width, self.height)
+        )
+
+    def show_mob_dial(self, dial_text, player, stage):
+        my_font = pygame.font.SysFont('freesansbold.ttf', 20)
+        stage.screen.blit(self.texture, (player.get_x(),
+                                         player.get_y()))
+        self.text = my_font.render(dial_text, True, (225, 255, 255))
+        self.text = pygame.transform.scale(
+            self.text, (self.width, self.height))
+        stage.screen.blit(self.text, (player.get_x(),
+                                      player.get_y() - self.height - 10))
+
+    def show_end_dial(self, dial_text, player, stage):
+        my_font = pygame.font.SysFont('freesansbold.ttf', 40)
+        blur = pygame.Surface((1080, 1920))
+        blur.fill((127, 127, 127))
+        blur.set_alpha(100)
+        stage.screen.blit(blur, (0, 0))
+        stage.screen.blit(self.texture, (300, 200))
+        self.text = my_font.render(dial_text, True, (225, 255, 255))
+        self.text = pygame.transform.scale(
+            self.text, (self.width, self.height))
+        stage.screen.blit(self.text, (player.get_x(),
+                                      player.get_y() - self.height - 10))
+
+
 """Game's starting session"""
 if __name__ == "__main__":
     pygame.init()
@@ -403,11 +451,15 @@ if __name__ == "__main__":
         alive = False
         while alive == False:
             alive = stage1.stage()
+        alive = False
+        while alive == False:
+            alive = stage2.stage()
+        alive = False
+        while alive == False:
+            alive = stage3.stage()
+        alive = False
+        while alive == False:
+            alive = stage4.stage()
     elif menu =='ABOUT US':
         print('here we are')
-
-
-
-    
-
     
