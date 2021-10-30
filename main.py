@@ -97,6 +97,15 @@ class Player:
         self.y = y
         self.direction = None
         self.stand = 0
+        self.alive = True
+    def get_health(self):
+        return self.health
+        
+    def get_bowe(self):
+        return self.bowe
+
+    def get_state(self):
+        return self.state
 
     def change_health(self, change):
         """changes player's health
@@ -125,7 +134,10 @@ class Player:
         return self.y
 
     def fall(self):
-        self.y += 5
+        if self.get_y() > 1080:
+            self.alive = False
+        else:
+            self.y += 5
 
     def jump(self, objects, screen):
         objects_unmoveable = objects.copy()
@@ -223,6 +235,7 @@ class Human(Player):
 
     def get_rigid(self):
         return self.rigid
+
 
 
 class Wolf(Player):
@@ -377,7 +390,10 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
     menu = main_window.menu()
     if menu == 'PLAY':
-        stage1.stage()
+        alive = False
+        while alive == False:
+            alive = stage1.stage()
+
     
 
     
