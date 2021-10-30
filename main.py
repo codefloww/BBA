@@ -95,6 +95,7 @@ class Player:
         self.x = x
         self.y = y
         self.direction = None
+        self.stand = 0
 
     def change_health(self, change):
         """changes player's health
@@ -122,10 +123,46 @@ class Player:
     def get_y(self):
         return self.y
 
-    def fall(self):
+    def fall(self, objects_unmovable):
         self.y += 5
+        # menu.update_screen(objects)
+        # while stand == 0:
+        #     support1 = (entity.get_x() + 1, entity.get_y() + entity.get_height())
+        #     support2 = (
+        #         entity.get_x() + entity.get_width() - 1,
+        #         entity.get_y() + entity.get_height(),
+        #     )
+        #     for object in objects_unmoveable:
+        #         if object.get_rigid().collidepoint(
+        #             support1
+        #         ) or object.get_rigid().collidepoint(support2):
+        #             stand += 1
+        #     starting_y = self.y
+        #     t = 0
+        #     if entity.direction == 'right':
+        #         while t < 10:
+        #             self.x += 5
+        #             self.y = starting_y + (-1 * t * (t - 20))
+        #             t += 1
+        #         pygame.time.delay(15)
+        #         menu.update_screen(objects)
+        #     elif entity.direction == 'left':
+        #         while t < 10:
+        #             self.x -= 5
+        #             self.y = starting_y + (-1 * t * (t - 20))
+        #             t += 1
+        #         pygame.time.delay(15)
+        #         menu.update_screen(objects)
+        #     else:
+        #         while t < 10:
+        #             self.y = starting_y + (-1 * t * (t - 20))
+        #             t += 1
+        #         pygame.time.delay(15)
+        #         menu.update_screen(objects)
 
-    def jump(self, objects_unmoveable):
+    def jump(self, objects):
+        objects_unmoveable = objects.copy()
+        objects_unmoveable.remove(self)
         if self.state == 'Wolf':
             delta = 150
             starting_y = self.y
@@ -154,7 +191,9 @@ class Player:
         elif self.state == 'Human':
             self.y -= 5
         
-    def movement_handle(self, keys_pressed, objects_unmoveable, stand):
+    def movement_handle(self, keys_pressed, objects):
+        objects_unmoveable = objects.copy()
+        objects_unmoveable.remove(self)
         if self.state == 'Wolf':
             if keys_pressed[pygame.K_RIGHT]:
                 pygame.time.delay(15)
@@ -385,15 +424,15 @@ if __name__ == "__main__":
                 if event.key == pygame.K_UP:
                     if stand == 1:
                         stand = 0
-                        player.jump(objects_unmoveable)
+                        player.jump(objects)
                         menu.update_screen(objects)
                         
         for entity in moveable:
-            stage.update_screen(objects)
+            menu.update_screen(objects)
             # physics.gravity(entity, objects)
             stand = 0
-            # objects_unmoveable = objects.copy()
-            # objects_unmoveable.remove(entity)
+            objects_unmoveable = objects.copy()
+            objects_unmoveable.remove(entity)
 
             while stand == 0:
                 support1 = (entity.get_x() + 1, entity.get_y() + entity.get_height())
@@ -406,9 +445,9 @@ if __name__ == "__main__":
                     if object.get_rigid().collidepoint(
                         support1
                     ) or object.get_rigid().collidepoint(support2):
-                        stand += 1
+                        stand += 1  
                 if stand == 0:
-                    entity.fall()
+                    entity.fall(objects_unmoveable)
                     if entity.direction == 'right':
                         entity.x += 5
                         pygame.time.delay(15)
@@ -416,8 +455,7 @@ if __name__ == "__main__":
                         entity.x -= 5
                         pygame.time.delay(15)
                     menu.update_screen(objects)
-            
+           
         keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects_unmoveable, stand)
-
-        stage.update_screen(objects)
+        player.movement_handle(keys_pressed, objects)
+        menu.update_screen(objects)
