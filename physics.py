@@ -4,26 +4,27 @@ import math
 import time
 
 
-def gravity(moveable,objects):
+def gravity(entity, objects,screen):
     stand = 0
     objects = objects.copy()
-    objects.remove(moveable)
+    objects.remove(entity)
     
-    while stand == 0:
-        support1 = (moveable.x+1,moveable.y+moveable.height)
-        support2 = (moveable.x+moveable.width-1,moveable.y + moveable.height)
-        print(support1)
-        for object in objects:
-            if object.get_rigid().collidepoint(support1) or object.get_rigid().collidepoint(support2):
-                stand+=1
-        if stand == 0:
-            moveable.fall()
-            pygame.time.delay(20)
-            
+    support1 = (entity.get_x()+1,entity.get_y()+entity.get_height())
+    support2 = (entity.get_x()+entity.get_width()-1,entity.get_y() + entity.get_height())
+    for object in objects:
+        if object.get_rigid().collidepoint(support1) or object.get_rigid().collidepoint(support2):
+            stand+=1
+    if stand == 0 and entity.alive:
+        entity.fall()
+        if entity.direction == 'right':
+            screen.move_background(10)
+            for object in objects:
+                object.move(10)
+            pygame.time.delay(15)
+        if entity.direction == 'left':
+            screen.move_background(-10)
+            for object in objects:
+                object.move(-10)
+            pygame.time.delay(15)
 
-# def side_collide(moveable,objects):
-#     objects = objects.copy()
-#     objects.remove(moveable)
-
-#     coll = 0
-#     while coll
+    return stand 

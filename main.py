@@ -48,7 +48,8 @@ class Window:
         """
         self.screen.blit(self.background, (self.x, self.y))
         for object in objects:
-            self.screen.blit(object.get_image(), (object.get_x(), object.get_y()))
+            self.screen.blit(object.get_image(),
+                             (object.get_x(), object.get_y()))
         pygame.display.update()
 
     def get_background(self):
@@ -95,6 +96,16 @@ class Player:
         self.x = x
         self.y = y
         self.direction = None
+        self.stand = 0
+        self.alive = True
+    def get_health(self):
+        return self.health
+        
+    def get_bowe(self):
+        return self.bowe
+
+    def get_state(self):
+        return self.state
 
     def change_health(self, change):
         """changes player's health
@@ -123,53 +134,75 @@ class Player:
         return self.y
 
     def fall(self):
-        self.y += 5
+        if self.get_y() > 1080:
+            self.alive = False
+        else:
+            self.y += 5
 
-    def jump(self, objects_unmoveable):
+    def jump(self, objects, screen):
+        objects_unmoveable = objects.copy()
+        objects_unmoveable.remove(self)
         if self.state == 'Wolf':
             delta = 150
-            starting_y = self.y
+            starting_y = self.get_y()
             if self.direction == 'right':
                 t = 0
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
-                    menu.move_background(10)
+                    screen.move_background(15)
                     for object in objects_unmoveable:
-                        object.move_road(15)
+                        object.move(15)
                     pygame.time.delay(15)
                     delta -= 15
-                    menu.update_screen(objects)
+                    screen.update_screen(objects)
             elif self.direction == 'left':
                 t = 0
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
-                    menu.move_background(-10)
+                    screen.move_background(-15)
                     for object in objects_unmoveable:
-                        object.move_road(-15)
+                        object.move(-15)
                     pygame.time.delay(15)
                     delta -= 15
-                    menu.update_screen(objects)
+                    screen.update_screen(objects)
+            elif self.direction == None:
+                t = 0
+                while delta > 0:
+                    self.y = starting_y + (1 * t * (t - 20))
+                    t += 1
+                    pygame.time.delay(15)
+                    delta -= 15
+                    screen.update_screen(objects)
+
         elif self.state == 'Human':
             self.y -= 5
-        
-    def movement_handle(self, keys_pressed, objects_unmoveable, stand):
+
+    def movement_handle(self, keys_pressed, objects, stand, screen):
+        objects_unmoveable = objects.copy()
+        objects_unmoveable.remove(self)
         if self.state == 'Wolf':
             if keys_pressed[pygame.K_RIGHT]:
                 pygame.time.delay(15)
-                menu.move_background(10)
+                screen.move_background(10)
                 self.direction = 'right'
                 for object in objects_unmoveable:
-                    object.move_road(10)
-            
+                    object.move(10)
+
             if keys_pressed[pygame.K_LEFT]:
                 pygame.time.delay(15)
-                menu.move_background(-10)
+                screen.move_background(-10)
                 self.direction = 'left'
                 for object in objects_unmoveable:
-                    object.move_road(-10)
-                                 
+                    object.move(-10)
+            
+            if keys_pressed[pygame.K_UP]:
+                pygame.time.delay(15)
+                if stand == 1:
+                        stand = 0
+                        self.jump(objects,screen)
+                        screen.update_screen(objects)
 
 class Human(Player):
     """class to specify human's part of the main charecter
@@ -199,12 +232,19 @@ class Human(Player):
         """Returns y coordinate of human"""
         return self.y
 
+    def get_width(self):
+        return self.width
+
+    def get_height(self):
+        return self.height
+
     def get_image(self):
         """Returns texture of human"""
         return self.texture
 
     def get_rigid(self):
         return self.rigid
+
 
 
 class Wolf(Player):
@@ -297,7 +337,7 @@ class Road:
     def get_rigid(self):
         return self.rigid
 
-    def move_road(self, vel):
+    def move(self, vel):
         """Implementation of parallax effect, moves bg instead of player
 
         Args:
@@ -356,68 +396,17 @@ class Button:
 """Game's starting session"""
 if __name__ == "__main__":
     pygame.init()
-    menu = Window(1920, 1080, "Beholder.mp3", "space.png")
-    menu.play_audio("start")
-    running = True
-    objects = []
-    moveable = []
-    player = Wolf(100, 100, 100, 10, "Wolf")
-    moveable.append(player)
-    objects.append(player)
-    soil1 = Road(100, 500, "ground", 5000, 50)
-    soil2 = Road(300, 400, "ground", 100, 100)
-    objects.append(soil1)
-    objects.append(soil2)
-    objects_unmoveable = objects.copy()
-    objects_unmoveable.remove(player)
     clock = pygame.time.Clock()
+    menu = main_window.menu()
+    if menu == 'PLAY':
+        alive = False
+        while alive == False:
+            alive = stage1.stage()
+    elif menu =='ABOUT US':
+        print('here we are')
 
-    while running:
-        clock.tick(60)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s:
-                    stage.play_audio("stop")
-                if event.key == pygame.K_p:
-                    menu.play_audio("play")
-                if event.key == pygame.K_UP:
-                    if stand == 1:
-                        stand = 0
-                        player.jump(objects_unmoveable)
-                        menu.update_screen(objects)
-                        
-        for entity in moveable:
-            stage.update_screen(objects)
-            # physics.gravity(entity, objects)
-            stand = 0
-            # objects_unmoveable = objects.copy()
-            # objects_unmoveable.remove(entity)
 
-            while stand == 0:
-                support1 = (entity.get_x() + 1, entity.get_y() + entity.get_height())
-                support2 = (
-                    entity.get_x() + entity.get_width() - 1,
-                    entity.get_y() + entity.get_height(),
-                )
-                # print(support1)
-                for object in objects_unmoveable:
-                    if object.get_rigid().collidepoint(
-                        support1
-                    ) or object.get_rigid().collidepoint(support2):
-                        stand += 1
-                if stand == 0:
-                    entity.fall()
-                    if entity.direction == 'right':
-                        entity.x += 5
-                        pygame.time.delay(15)
-                    if entity.direction == 'left':
-                        entity.x -= 5
-                        pygame.time.delay(15)
-                    menu.update_screen(objects)
-            
-        keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects_unmoveable, stand)
 
-        stage.update_screen(objects)
+    
+
+    
