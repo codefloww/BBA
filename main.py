@@ -379,7 +379,7 @@ if __name__ == "__main__":
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s:
-                    menu.play_audio("stop")
+                    stage.play_audio("stop")
                 if event.key == pygame.K_p:
                     menu.play_audio("play")
                 if event.key == pygame.K_UP:
@@ -389,7 +389,7 @@ if __name__ == "__main__":
                         menu.update_screen(objects)
                         
         for entity in moveable:
-            menu.update_screen(objects)
+            stage.update_screen(objects)
             # physics.gravity(entity, objects)
             stand = 0
             # objects_unmoveable = objects.copy()
@@ -420,4 +420,4 @@ if __name__ == "__main__":
         keys_pressed = pygame.key.get_pressed()
         player.movement_handle(keys_pressed, objects_unmoveable, stand)
 
-        menu.update_screen(objects)
+        stage.update_screen(objects)
