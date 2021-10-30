@@ -178,23 +178,25 @@ class Player:
         elif self.state == 'Human':
             self.y -= 5
 
-    def movement_handle(self, keys_pressed, objects, stand, screen):
+    def movement_handle(self, keys_pressed, objects, stand, screen, walls_collision):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
         if self.state == 'Wolf':
             if keys_pressed[pygame.K_RIGHT]:
-                pygame.time.delay(15)
-                screen.move_background(10)
-                self.direction = 'right'
-                for object in objects_unmoveable:
-                    object.move(10)
+                if walls_collision[1] != 1:
+                    pygame.time.delay(15)
+                    screen.move_background(10)
+                    self.direction = 'right'
+                    for object in objects_unmoveable:
+                        object.move(10)
 
             if keys_pressed[pygame.K_LEFT]:
-                pygame.time.delay(15)
-                screen.move_background(-10)
-                self.direction = 'left'
-                for object in objects_unmoveable:
-                    object.move(-10)
+                if walls_collision[0] != 1:
+                    pygame.time.delay(15)
+                    screen.move_background(-10)
+                    self.direction = 'left'
+                    for object in objects_unmoveable:
+                        object.move(-10)
             
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
@@ -260,7 +262,7 @@ class Wolf(Player):
         self.width = 100
         self.height = 100
         self.texture = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", "wolf_standing.png")),
+            pygame.image.load(os.path.join("Assets", "red_square.png")),
             (self.width * 1.15, self.height * 1.15),
         )
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
