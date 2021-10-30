@@ -15,6 +15,7 @@ def menu():
     objects.append(BUTTON_PLAY)
     objects.append(BUTTON_EXIT)
     objects.append(BUTTON_ABOUT_US)
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

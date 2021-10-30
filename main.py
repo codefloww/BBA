@@ -48,8 +48,7 @@ class Window:
         """
         self.screen.blit(self.background, (self.x, self.y))
         for object in objects:
-            self.screen.blit(object.get_image(),
-                             (object.get_x(), object.get_y()))
+            self.screen.blit(object.get_image(), (object.get_x(), object.get_y()))
         pygame.display.update()
 
     def get_background(self):
@@ -98,9 +97,10 @@ class Player:
         self.direction = None
         self.stand = 0
         self.alive = True
+
     def get_health(self):
         return self.health
-        
+
     def get_bowe(self):
         return self.bowe
 
@@ -142,10 +142,10 @@ class Player:
     def jump(self, objects, screen):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
-        if self.state == 'Wolf':
+        if self.state == "Wolf":
             delta = 150
             starting_y = self.get_y()
-            if self.direction == 'right':
+            if self.direction == "right":
                 t = 0
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
@@ -156,7 +156,7 @@ class Player:
                     pygame.time.delay(15)
                     delta -= 15
                     screen.update_screen(objects)
-            elif self.direction == 'left':
+            elif self.direction == "left":
                 t = 0
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
@@ -176,27 +176,27 @@ class Player:
                     delta -= 15
                     screen.update_screen(objects)
 
-        elif self.state == 'Human':
+        elif self.state == "Human":
             self.y -= 5
 
     def movement_handle(self, keys_pressed, objects, stand, screen):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
-        if self.state == 'Wolf':
+        if self.state == "Wolf":
             if keys_pressed[pygame.K_RIGHT]:
                 pygame.time.delay(15)
                 screen.move_background(10)
-                self.direction = 'right'
+                self.direction = "right"
                 for object in objects_unmoveable:
                     object.move(10)
 
             if keys_pressed[pygame.K_LEFT]:
                 pygame.time.delay(15)
                 screen.move_background(-10)
-                self.direction = 'left'
+                self.direction = "left"
                 for object in objects_unmoveable:
                     object.move(-10)
-            
+
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
                 if stand == 1:
@@ -245,7 +245,6 @@ class Human(Player):
 
     def get_rigid(self):
         return self.rigid
-
 
 
 class Wolf(Player):
@@ -405,10 +404,10 @@ class Button:
 
 
 class Dialog:
-    def __init__(self, kind, back='Assets/red_square.png'):
+    def __init__(self, kind, back="Assets/red_square.png"):
         if kind == 0:
-            self.width = 100
-            self.height = 50
+            self.width = 500
+            self.height = 100
         if kind == 1:
             self.width = 1300
             self.height = 600
@@ -418,27 +417,28 @@ class Dialog:
         )
 
     def show_mob_dial(self, dial_text, player, stage):
-        my_font = pygame.font.SysFont('freesansbold.ttf', 20)
-        stage.screen.blit(self.texture, (player.get_x(),
-                                         player.get_y()))
+        my_font = pygame.font.SysFont("freesansbold.ttf", 40)
+        stage.screen.blit(self.texture, (player.get_x() + 50, player.get_y()))
         self.text = my_font.render(dial_text, True, (225, 255, 255))
-        self.text = pygame.transform.scale(
-            self.text, (self.width, self.height))
-        stage.screen.blit(self.text, (player.get_x(),
-                                      player.get_y() - self.height - 10))
+        self.text = pygame.transform.scale(self.text, (self.width, self.height))
+        stage.screen.blit(self.text, (player.get_x() + 50, player.get_y() + 10))
+        pygame.display.update()
+        pygame.time.delay(5000)
 
     def show_end_dial(self, dial_text, player, stage):
-        my_font = pygame.font.SysFont('freesansbold.ttf', 40)
+        my_font = pygame.font.SysFont("freesansbold.ttf", 80)
         blur = pygame.Surface((1080, 1920))
         blur.fill((127, 127, 127))
         blur.set_alpha(100)
         stage.screen.blit(blur, (0, 0))
         stage.screen.blit(self.texture, (300, 200))
         self.text = my_font.render(dial_text, True, (225, 255, 255))
-        self.text = pygame.transform.scale(
-            self.text, (self.width, self.height))
-        stage.screen.blit(self.text, (player.get_x(),
-                                      player.get_y() - self.height - 10))
+        self.text = pygame.transform.scale(self.text, (self.width, self.height))
+        stage.screen.blit(
+            self.text, (player.get_x(), player.get_y() - self.height - 10)
+        )
+        pygame.display.update()
+        pygame.time.delay(5000)
 
 
 """Game's starting session"""
@@ -446,7 +446,7 @@ if __name__ == "__main__":
     pygame.init()
     clock = pygame.time.Clock()
     menu = main_window.menu()
-    if menu == 'PLAY':
+    if menu == "PLAY":
         alive = False
         while alive == False:
             alive = stage1.stage()
@@ -459,6 +459,5 @@ if __name__ == "__main__":
         alive = False
         while alive == False:
             alive = stage4.stage()
-    elif menu =='ABOUT US':
-        print('here we are')
-    
+    elif menu == "ABOUT US":
+        print("here we are")
