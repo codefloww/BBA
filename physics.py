@@ -4,7 +4,7 @@ import math
 import time
 
 
-def gravity(entity, objects,screen):
+def gravity(entity, objects, screen):
     stand = 0
     objects = objects.copy()
     objects.remove(entity)
@@ -27,4 +27,23 @@ def gravity(entity, objects,screen):
                 object.move(-10)
             pygame.time.delay(15)
 
-    return stand 
+    return stand
+    
+def stutter(entity, objects):
+    left_wall = 0
+    right_wall = 0
+    objects = objects.copy()
+    objects.remove(entity)
+
+    support_left1 = (entity.get_x(), entity.get_y() + 10)
+    support_left2 = (entity.get_x(), entity.get_y() + entity.get_height() - 10)
+    support_right1 = (entity.get_x() + entity.get_width(), entity.get_y() + 10)
+    support_right2 = (entity.get_x() + entity.get_width(), entity.get_y() + entity.get_height() - 10)
+
+    for object in objects:
+        if object.get_rigid().collidepoint(support_left1) or object.get_rigid().collidepoint(support_left2):
+            left_wall = 1
+        if object.get_rigid().collidepoint(support_right1) or object.get_rigid().collidepoint(support_right2):
+            right_wall = 1
+
+    return [left_wall, right_wall]

@@ -41,15 +41,18 @@ def stage():
 
         for entity in moveable:
             stage1.update_screen(objects)
-            # physics.gravity(entity, objects)
             stand = 0
+            objects_unmoveable = objects.copy()
+            objects_unmoveable.remove(entity)
+            wall_collision = physics.stutter(entity, objects)
 
             while stand == 0 and entity.alive:
                 stand = physics.gravity(entity, objects, stage1)
                 entity.direction = None
                 stage1.update_screen(objects)
+
         keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects, stand, stage1)
+        player.movement_handle(keys_pressed, objects, stand, stage1, wall_collision)
         stage1.update_screen(objects)
 
         if not player.alive:
