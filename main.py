@@ -127,27 +127,26 @@ class Player:
             delta = 150
             while delta > 0:
                 self.y -= 15
-                pygame.time.delay(10)
+                pygame.time.delay(15)
                 delta -= 15
                 menu.update_screen(objects)
         elif self.state == 'Human':
-            self.y -= 50
+            self.y -= 5
         
-    def movement_handle(self, keys_pressed, objects_unmoveable):
+    def movement_handle(self, keys_pressed, objects_unmoveable, stand):
         if self.state == 'Wolf':
             if keys_pressed[pygame.K_RIGHT]:
                 pygame.time.delay(15)
                 menu.move_background(10)
                 for object in objects_unmoveable:
                     object.move_road(10)
-                    object.get_rigid().move(10, 0)
+            
             if keys_pressed[pygame.K_LEFT]:
                 pygame.time.delay(15)
                 menu.move_background(-10)
                 for object in objects_unmoveable:
                     object.move_road(-10)
-                    object.get_rigid().move(-10, 0)
-
+                                 
 
 class Human(Player):
     """class to specify human's part of the main charecter
@@ -368,6 +367,6 @@ if __name__ == "__main__":
                     menu.update_screen(objects)
             
         keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects_unmoveable)
+        player.movement_handle(keys_pressed, objects_unmoveable, stand)
 
         menu.update_screen(objects)
