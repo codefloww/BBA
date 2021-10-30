@@ -127,7 +127,7 @@ class Player:
     def fall(self):
         self.y += 5
 
-    def jump(self, objects):
+    def jump(self, objects, screen):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
         if self.state == 'Wolf':
@@ -138,23 +138,23 @@ class Player:
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
-                    menu.move_background(10)
+                    screen.move_background(10)
                     for object in objects_unmoveable:
                         object.move_road(15)
                     pygame.time.delay(15)
                     delta -= 15
-                    menu.update_screen(objects)
+                    screen.update_screen(objects)
             elif self.direction == 'left':
                 t = 0
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
-                    menu.move_background(-10)
+                    screen.move_background(-10)
                     for object in objects_unmoveable:
                         object.move_road(-15)
                     pygame.time.delay(15)
                     delta -= 15
-                    menu.update_screen(objects)
+                    screen.update_screen(objects)
         elif self.state == 'Human':
             self.y -= 5
 
@@ -180,7 +180,7 @@ class Player:
                 pygame.time.delay(15)
                 if stand == 1:
                         stand = 0
-                        player.jump(objects)
+                        self.jump(objects,screen)
                         screen.update_screen(objects)
 
 class Human(Player):
@@ -368,47 +368,10 @@ class Button:
 """Game's starting session"""
 if __name__ == "__main__":
     pygame.init()
-    menu = Window(1920, 1080, "Beholder.mp3", "space.png")
-    menu.play_audio("start")
-    running = True
-    objects = []
-    moveable = []  # Each moveable object, basically mobs and player
-    player = Wolf(100, 100, 100, 10, "Wolf")
-    moveable.append(player)
-    objects.append(player)
-    soil1 = Road(100, 500, "ground", 5000, 50)
-    soil2 = Road(300, 400, "ground", 100, 100)
-    objects.append(soil1)
-    objects.append(soil2)
-    objects_unmoveable = objects.copy()
-    objects_unmoveable.remove(player)
     clock = pygame.time.Clock()
+    menu = main_window.menu()
+    if menu == 'PLAY':
+        stage1.stage()
+    
 
-    while running:
-        clock.tick(60)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_s:
-                    menu.play_audio("stop")
-                if event.key == pygame.K_p:
-                    menu.play_audio("play")
-                # if event.key == pygame.K_UP:
-                #     if stand == 1:
-                #         stand = 0
-                #         player.jump(objects)
-                #         menu.update_screen(objects)
-
-        for entity in moveable:
-            menu.update_screen(objects)
-            stand = 0
-            objects_unmoveable = objects.copy()
-            objects_unmoveable.remove(entity)
-
-            while stand == 0:
-                stand = physics.gravity(entity, objects)
-                menu.update_screen(objects)
-        keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects, stand, menu)
-        menu.update_screen(objects)
+    
