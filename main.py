@@ -28,10 +28,7 @@ class Window:
         self.height = height
         self.audio = pygame.mixer.music.load(os.path.join("Assets", audio))
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", background)),
-            (self.width, self.height),
-        )
+        self.background = pygame.image.load(os.path.join("Assets", background))
 
     def get_size(self):
         """
@@ -402,11 +399,15 @@ if __name__ == "__main__":
         alive = False
         while alive == False:
             alive = stage1.stage()
+        alive = False
+        while alive == False:
+            alive = stage2.stage()
+        alive = False
+        while alive == False:
+            alive = stage3.stage()
+        alive = False
+        while alive == False:
+            alive = stage4.stage()
     elif menu =='ABOUT US':
         print('here we are')
-
-
-
-    
-
     

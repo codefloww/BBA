@@ -4,7 +4,7 @@ import pygame
 import physics
 pygame.mixer.init()
 def stage():
-    stage1 = main.Window(1920, 1080, "Beholder.mp3", "background.png")
+    stage1 = main.Window(1920, 1080, "Beholder.mp3", "background1.jpg")
     stage1.play_audio("start")
     running = True
     objects = []
