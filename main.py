@@ -362,16 +362,6 @@ if __name__ == "__main__":
                     stage.play_audio("stop")
                 if event.key == pygame.K_p:
                     stage.play_audio("play")
-                if event.key == pygame.K_LEFT:
-                    stage.move_background(-10)
-                    for object in objects_unmoveable:
-                        object.move_road(-10)
-                        object.get_rigid().move(-10, 0)
-                if event.key == pygame.K_RIGHT:
-                    stage.move_background(10)
-                    for object in objects_unmoveable:
-                        object.move_road(10)
-                        object.get_rigid().move(10, 0)
                 if event.key == pygame.K_UP:
                     if stand == 1:
                         player.jump()

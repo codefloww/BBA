@@ -20,3 +20,10 @@ def gravity(moveable,objects):
             moveable.fall()
             pygame.time.delay(20)
             
+
+# def side_collide(moveable,objects):
+#     objects = objects.copy()
+#     objects.remove(moveable)
+
+#     coll = 0
+#     while coll
