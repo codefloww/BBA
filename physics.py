@@ -14,7 +14,7 @@ def gravity(entity, objects, screen):
     for object in objects:
         if object.get_rigid().collidepoint(support1) or object.get_rigid().collidepoint(support2):
             stand+=1
-    if stand == 0:
+    if stand == 0 and entity.alive:
         entity.fall()
         if entity.direction == 'right':
             screen.move_background(10)

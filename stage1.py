@@ -4,6 +4,7 @@ import pygame
 import physics
 pygame.mixer.init()
 def stage():
+    alive = True
     stage1 = main.Window(1920, 1080, "Beholder.mp3", "space.png")
     stage1.play_audio("start")
     running = True
@@ -37,13 +38,16 @@ def stage():
             objects_unmoveable = objects.copy()
             objects_unmoveable.remove(entity)
 
-            while stand == 0:
-                stand = physics.gravity(entity, objects, stage1)
-                player.direction = None
+            while stand == 0 and entity.alive:
+                stand = physics.gravity(entity, objects)
                 stage1.update_screen(objects)
         keys_pressed = pygame.key.get_pressed()
         player.movement_handle(keys_pressed, objects, stand, stage1)
         stage1.update_screen(objects)
+
+        if not player.alive:
+            running = False
+            return player.alive
 
 
 if __name__ == '__main__':
