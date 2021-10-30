@@ -11,8 +11,8 @@ import physics
 
 
 class Window:
-    """class to work with window properties
-    """
+    """class to work with window properties"""
+
     def __init__(self, width, height, audio, background) -> None:
         """initializes window properties
 
@@ -51,6 +51,9 @@ class Window:
             self.screen.blit(object.get_image(), (object.get_x(), object.get_y()))
         pygame.display.update()
 
+    def get_background(self):
+        return self.background
+
     def move_background(self, vel):
         """Implementation of parallax effect, moves bg instead of player
 
@@ -74,8 +77,8 @@ class Window:
 
 
 class Player:
-    """class to specify player's attributes
-    """
+    """class to specify player's attributes"""
+
     def __init__(self, x, y, health, bowe, state) -> None:
         """Initializes player's properties
 
@@ -109,8 +112,7 @@ class Player:
         self.bowe += change
 
     def change_state(self):
-        """changes state of player
-        """
+        """changes state of player"""
         self.state = "Human" if self.state == "Wolf" else "Wolf"
 
     def get_x(self):
@@ -121,9 +123,9 @@ class Player:
 
     def fall(self):
         self.y += 5
-    
+
     def jump(self):
-        if self.state == 'Wolf':
+        if self.state == "Wolf":
             delta = 150
             while delta > 0:
                 self.y -= 15
@@ -154,9 +156,9 @@ class Human(Player):
     Args:
         Player (parent class)
     """
+
     def __init__(self, x, y, health, bowe, state) -> None:
-        """initializes human properties
-        """
+        """initializes human properties"""
         super().__init__(x, y, health, bowe, state)
         self.velocity = 5
         self.mass = 5
@@ -169,18 +171,15 @@ class Human(Player):
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def get_x(self):
-        """Returns x coordinate of human
-        """
+        """Returns x coordinate of human"""
         return self.x
 
     def get_y(self):
-        """Returns y coordinate of human
-        """
+        """Returns y coordinate of human"""
         return self.y
 
     def get_image(self):
-        """Returns texture of human
-        """
+        """Returns texture of human"""
         return self.texture
 
     def get_rigid(self):
@@ -193,6 +192,7 @@ class Wolf(Player):
     Args:
         Player (parent class)
     """
+
     def __init__(self, x, y, health, bowe, state) -> None:
         super().__init__(x, y, health, bowe, state)
         self.velocity = 5
@@ -211,6 +211,12 @@ class Wolf(Player):
     def get_rigid(self):
         return self.rigid
 
+    def get_width(self):
+        return self.width
+
+    def get_height(self):
+        return self.height
+
 
 class Story:
     def __init__(self) -> None:
@@ -223,9 +229,9 @@ class Mobs:
 
 
 class Road:
-    """class to build paths and solid ground in generall
-    """
-    def __init__(self, x, y, type, width, height, texture = 'space.png') -> None:
+    """class to build paths and solid ground in generall"""
+
+    def __init__(self, x, y, type, width, height, texture="green_square.png") -> None:
         """initializes road block properties
 
         Args:
@@ -248,28 +254,23 @@ class Road:
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def get_x(self):
-        """returns x coordinate of block
-        """
+        """returns x coordinate of block"""
         return self.x
 
     def get_y(self):
-        """returns y coordinate of block
-        """
+        """returns y coordinate of block"""
         return self.y
 
     def get_width(self):
-        """returns width of block
-        """
+        """returns width of block"""
         return self.width
 
     def get_height(self):
-        """returns height of block
-        """
+        """returns height of block"""
         return self.height
 
     def get_image(self):
-        """returns texture of an block
-        """
+        """returns texture of an block"""
         return self.texture
 
     def get_rigid(self):
@@ -294,11 +295,44 @@ class Road:
 #         return self.image
 
 
-class Buttons:
-    def __init__(self) -> None:
-        pass
+class Button:
+    def __init__(self, width, height, background, x, y, caption) -> None:
+        self.width = width
+        self.height = height
+        self.background = pygame.transform.scale(
+            pygame.image.load(os.path.join("Assets", background)),
+            (self.width, self.height),
+        )
+        self.x = x
+        self.y = y
+        self.state = "inactive"
+        self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.caption = caption
 
-'''Game's starting session'''
+    def get_rigid(self):
+        return self.rigid
+
+    def clicked(self, clicked_image):
+        self.state = "active"
+        self.background = pygame.transform.scale(
+            pygame.image.load(os.path.join("Assets", clicked_image)),
+            (self.width, self.height),
+        )
+
+    def get_image(self):
+        return self.background
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
+
+    def get_caption(self):
+        return self.caption
+
+
+"""Game's starting session"""
 if __name__ == "__main__":
     pygame.init()
     menu = Window(1920, 1080, "Oles.mp3", "space.png")
@@ -310,7 +344,7 @@ if __name__ == "__main__":
     moveable.append(player)
     objects.append(player)
     soil1 = Road(100, 500, "ground", 300, 100)
-    soil2 = Road(300, 400, 'ground', 300, 100)
+    soil2 = Road(300, 400, "ground", 300, 100)
     objects.append(soil1)
     objects.append(soil2)
     objects_unmoveable = objects.copy()
@@ -350,12 +384,12 @@ if __name__ == "__main__":
             # objects_unmoveable.remove(entity)
 
             while stand == 0:
-                support1 = (entity.get_x() + 1, entity.get_y() + entity.height)
+                support1 = (entity.get_x() + 1, entity.get_y() + entity.get_height())
                 support2 = (
-                    entity.get_x() + entity.width - 1,
-                    entity.get_y() + entity.height,
+                    entity.get_x() + entity.get_width() - 1,
+                    entity.get_y() + entity.get_height(),
                 )
-                #print(support1)
+                # print(support1)
                 for object in objects_unmoveable:
                     if object.get_rigid().collidepoint(
                         support1
