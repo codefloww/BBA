@@ -4,7 +4,7 @@ import math
 import time
 
 
-def gravity(entity, objects):
+def gravity(entity, objects,screen):
     stand = 0
     objects = objects.copy()
     objects.remove(entity)
@@ -14,13 +14,17 @@ def gravity(entity, objects):
     for object in objects:
         if object.get_rigid().collidepoint(support1) or object.get_rigid().collidepoint(support2):
             stand+=1
-    if stand == 0:
+    if stand == 0 and entity.alive:
         entity.fall()
         if entity.direction == 'right':
-            entity.x += 5
+            screen.move_background(10)
+            for object in objects:
+                object.move(10)
             pygame.time.delay(15)
         if entity.direction == 'left':
-            entity.x -= 5
+            screen.move_background(-10)
+            for object in objects:
+                object.move(-10)
             pygame.time.delay(15)
 
     return stand 
