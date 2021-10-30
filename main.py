@@ -132,7 +132,7 @@ class Player:
         objects_unmoveable.remove(self)
         if self.state == 'Wolf':
             delta = 150
-            starting_y = self.y
+            starting_y = self.get_y()
             if self.direction == 'right':
                 t = 0
                 while delta > 0:
@@ -210,6 +210,12 @@ class Human(Player):
     def get_y(self):
         """Returns y coordinate of human"""
         return self.y
+
+    def get_width(self):
+        return self.width
+
+    def get_height(self):
+        return self.height
 
     def get_image(self):
         """Returns texture of human"""

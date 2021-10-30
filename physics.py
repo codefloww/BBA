@@ -9,8 +9,8 @@ def gravity(entity, objects):
     objects = objects.copy()
     objects.remove(entity)
     
-    support1 = (entity.x+1,entity.y+entity.height)
-    support2 = (entity.x+entity.width-1,entity.y + entity.height)
+    support1 = (entity.get_x()+1,entity.get_y()+entity.get_height())
+    support2 = (entity.get_x()+entity.get_width()-1,entity.get_y() + entity.get_height())
     for object in objects:
         if object.get_rigid().collidepoint(support1) or object.get_rigid().collidepoint(support2):
             stand+=1
