@@ -398,7 +398,7 @@ class Dialog:
             pygame.image.load(back), (self.width, self.height)
         )
 
-    def show_mob_dial(self, dial_text):
+    def show_mob_dial(self, dial_text, player, stage):
         my_font = pygame.font.SysFont('freesansbold.ttf', 20)
         stage.screen.blit(self.texture, (player.get_x(),
                                          player.get_y()))
@@ -408,7 +408,7 @@ class Dialog:
         stage.screen.blit(self.text, (player.get_x(),
                                       player.get_y() - self.height - 10))
 
-    def show_end_dial(self, dial_text):
+    def show_end_dial(self, dial_text, player, stage):
         my_font = pygame.font.SysFont('freesansbold.ttf', 40)
         blur = pygame.Surface((1080, 1920))
         blur.fill((127, 127, 127))
