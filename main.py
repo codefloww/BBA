@@ -126,40 +126,6 @@ class Player:
 
     def fall(self):
         self.y += 5
-        # menu.update_screen(objects)
-        # while stand == 0:
-        #     support1 = (entity.get_x() + 1, entity.get_y() + entity.get_height())
-        #     support2 = (
-        #         entity.get_x() + entity.get_width() - 1,
-        #         entity.get_y() + entity.get_height(),
-        #     )
-        #     for object in objects_unmoveable:
-        #         if object.get_rigid().collidepoint(
-        #             support1
-        #         ) or object.get_rigid().collidepoint(support2):
-        #             stand += 1
-        #     starting_y = self.y
-        #     t = 0
-        #     if entity.direction == 'right':
-        #         while t < 10:
-        #             self.x += 5
-        #             self.y = starting_y + (-1 * t * (t - 20))
-        #             t += 1
-        #         pygame.time.delay(15)
-        #         menu.update_screen(objects)
-        #     elif entity.direction == 'left':
-        #         while t < 10:
-        #             self.x -= 5
-        #             self.y = starting_y + (-1 * t * (t - 20))
-        #             t += 1
-        #         pygame.time.delay(15)
-        #         menu.update_screen(objects)
-        #     else:
-        #         while t < 10:
-        #             self.y = starting_y + (-1 * t * (t - 20))
-        #             t += 1
-        #         pygame.time.delay(15)
-        #         menu.update_screen(objects)
 
     def jump(self, objects):
         objects_unmoveable = objects.copy()
@@ -192,24 +158,30 @@ class Player:
         elif self.state == 'Human':
             self.y -= 5
 
-    def movement_handle(self, keys_pressed, objects):
+    def movement_handle(self, keys_pressed, objects, stand, screen):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
         if self.state == 'Wolf':
             if keys_pressed[pygame.K_RIGHT]:
                 pygame.time.delay(15)
-                menu.move_background(10)
+                screen.move_background(10)
                 self.direction = 'right'
                 for object in objects_unmoveable:
                     object.move_road(10)
 
             if keys_pressed[pygame.K_LEFT]:
                 pygame.time.delay(15)
-                menu.move_background(-10)
+                screen.move_background(-10)
                 self.direction = 'left'
                 for object in objects_unmoveable:
                     object.move_road(-10)
-
+            
+            if keys_pressed[pygame.K_UP]:
+                pygame.time.delay(15)
+                if stand == 1:
+                        stand = 0
+                        player.jump(objects)
+                        screen.update_screen(objects)
 
 class Human(Player):
     """class to specify human's part of the main charecter
@@ -422,15 +394,14 @@ if __name__ == "__main__":
                     menu.play_audio("stop")
                 if event.key == pygame.K_p:
                     menu.play_audio("play")
-                if event.key == pygame.K_UP:
-                    if stand == 1:
-                        stand = 0
-                        player.jump(objects)
-                        menu.update_screen(objects)
+                # if event.key == pygame.K_UP:
+                #     if stand == 1:
+                #         stand = 0
+                #         player.jump(objects)
+                #         menu.update_screen(objects)
 
         for entity in moveable:
             menu.update_screen(objects)
-            # physics.gravity(entity, objects)
             stand = 0
             objects_unmoveable = objects.copy()
             objects_unmoveable.remove(entity)
@@ -439,5 +410,5 @@ if __name__ == "__main__":
                 stand = physics.gravity(entity, objects)
                 menu.update_screen(objects)
         keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects)
+        player.movement_handle(keys_pressed, objects, stand, menu)
         menu.update_screen(objects)
