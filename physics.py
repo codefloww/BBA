@@ -4,7 +4,7 @@ import math
 import time
 
 
-def gravity(entity, objects, screen):
+def gravity(entity, objects,screen):
     stand = 0
     objects = objects.copy()
     objects.remove(entity)
@@ -19,12 +19,12 @@ def gravity(entity, objects, screen):
         if entity.direction == 'right':
             screen.move_background(10)
             for object in objects:
-                    object.move_road(10)
+                object.move(10)
             pygame.time.delay(15)
         if entity.direction == 'left':
             screen.move_background(-10)
             for object in objects:
-                    object.move_road(10)
+                object.move(-10)
             pygame.time.delay(15)
         # entity.direction = None
 

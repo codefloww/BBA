@@ -150,9 +150,9 @@ class Player:
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
-                    screen.move_background(10)
+                    screen.move_background(15)
                     for object in objects_unmoveable:
-                        object.move_road(15)
+                        object.move(15)
                     pygame.time.delay(15)
                     delta -= 15
                     screen.update_screen(objects)
@@ -161,9 +161,9 @@ class Player:
                 while delta > 0:
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
-                    screen.move_background(-10)
+                    screen.move_background(-15)
                     for object in objects_unmoveable:
-                        object.move_road(-15)
+                        object.move(-15)
                     pygame.time.delay(15)
                     delta -= 15
                     screen.update_screen(objects)
@@ -187,14 +187,14 @@ class Player:
                 screen.move_background(10)
                 self.direction = 'right'
                 for object in objects_unmoveable:
-                    object.move_road(10)
+                    object.move(10)
 
             if keys_pressed[pygame.K_LEFT]:
                 pygame.time.delay(15)
                 screen.move_background(-10)
                 self.direction = 'left'
                 for object in objects_unmoveable:
-                    object.move_road(-10)
+                    object.move(-10)
             
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
@@ -336,7 +336,7 @@ class Road:
     def get_rigid(self):
         return self.rigid
 
-    def move_road(self, vel):
+    def move(self, vel):
         """Implementation of parallax effect, moves bg instead of player
 
         Args:
@@ -401,6 +401,10 @@ if __name__ == "__main__":
         alive = False
         while alive == False:
             alive = stage1.stage()
+    elif menu =='ABOUT US':
+        print('here we are')
+
+
 
     
 
