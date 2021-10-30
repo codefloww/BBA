@@ -132,6 +132,21 @@ class Player:
                 menu.update_screen(objects)
         elif self.state == 'Human':
             self.y -= 50
+        
+    def movement_handle(self, keys_pressed, objects_unmoveable):
+        if self.state == 'Wolf':
+            if keys_pressed[pygame.K_RIGHT]:
+                pygame.time.delay(15)
+                menu.move_background(10)
+                for object in objects_unmoveable:
+                    object.move_road(10)
+                    object.get_rigid().move(10, 0)
+            if keys_pressed[pygame.K_LEFT]:
+                pygame.time.delay(15)
+                menu.move_background(-10)
+                for object in objects_unmoveable:
+                    object.move_road(-10)
+                    object.get_rigid().move(-10, 0)
 
 
 class Human(Player):
@@ -187,7 +202,7 @@ class Wolf(Player):
         self.height = 100
         self.texture = pygame.transform.scale(
             pygame.image.load(os.path.join("Assets", "wolf_standing.png")),
-            (self.width, self.height),
+            (self.width * 1.15, self.height * 1.15),
         )
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
 
@@ -211,7 +226,7 @@ class Mobs:
 class Road:
     """class to build paths and solid ground in generall
     """
-    def __init__(self, x, y, type, width, height, texture = 'green_square.png') -> None:
+    def __init__(self, x, y, type, width, height, texture = 'space.png') -> None:
         """initializes road block properties
 
         Args:
@@ -302,6 +317,7 @@ if __name__ == "__main__":
     objects_unmoveable = objects.copy()
     objects_unmoveable.remove(player)
     clock = pygame.time.Clock()
+
     while running:
         clock.tick(60)
         for event in pygame.event.get():
@@ -351,4 +367,7 @@ if __name__ == "__main__":
                     pygame.time.delay(5)
                     menu.update_screen(objects)
             
+        keys_pressed = pygame.key.get_pressed()
+        player.movement_handle(keys_pressed, objects_unmoveable)
+
         menu.update_screen(objects)
