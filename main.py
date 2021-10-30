@@ -48,7 +48,8 @@ class Window:
         """
         self.screen.blit(self.background, (self.x, self.y))
         for object in objects:
-            self.screen.blit(object.get_image(), (object.get_x(), object.get_y()))
+            self.screen.blit(object.get_image(),
+                             (object.get_x(), object.get_y()))
         pygame.display.update()
 
     def get_background(self):
@@ -123,7 +124,7 @@ class Player:
     def get_y(self):
         return self.y
 
-    def fall(self, objects_unmovable):
+    def fall(self):
         self.y += 5
         # menu.update_screen(objects)
         # while stand == 0:
@@ -190,7 +191,7 @@ class Player:
                     menu.update_screen(objects)
         elif self.state == 'Human':
             self.y -= 5
-        
+
     def movement_handle(self, keys_pressed, objects):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
@@ -201,14 +202,14 @@ class Player:
                 self.direction = 'right'
                 for object in objects_unmoveable:
                     object.move_road(10)
-            
+
             if keys_pressed[pygame.K_LEFT]:
                 pygame.time.delay(15)
                 menu.move_background(-10)
                 self.direction = 'left'
                 for object in objects_unmoveable:
                     object.move_road(-10)
-                                 
+
 
 class Human(Player):
     """class to specify human's part of the main charecter
@@ -399,7 +400,7 @@ if __name__ == "__main__":
     menu.play_audio("start")
     running = True
     objects = []
-    moveable = []
+    moveable = []  # Each moveable object, basically mobs and player
     player = Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
@@ -418,7 +419,7 @@ if __name__ == "__main__":
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s:
-                    stage.play_audio("stop")
+                    menu.play_audio("stop")
                 if event.key == pygame.K_p:
                     menu.play_audio("play")
                 if event.key == pygame.K_UP:
@@ -426,7 +427,7 @@ if __name__ == "__main__":
                         stand = 0
                         player.jump(objects)
                         menu.update_screen(objects)
-                        
+
         for entity in moveable:
             menu.update_screen(objects)
             # physics.gravity(entity, objects)
@@ -435,27 +436,8 @@ if __name__ == "__main__":
             objects_unmoveable.remove(entity)
 
             while stand == 0:
-                support1 = (entity.get_x() + 1, entity.get_y() + entity.get_height())
-                support2 = (
-                    entity.get_x() + entity.get_width() - 1,
-                    entity.get_y() + entity.get_height(),
-                )
-                # print(support1)
-                for object in objects_unmoveable:
-                    if object.get_rigid().collidepoint(
-                        support1
-                    ) or object.get_rigid().collidepoint(support2):
-                        stand += 1  
-                if stand == 0:
-                    entity.fall(objects_unmoveable)
-                    if entity.direction == 'right':
-                        entity.x += 5
-                        pygame.time.delay(15)
-                    if entity.direction == 'left':
-                        entity.x -= 5
-                        pygame.time.delay(15)
-                    menu.update_screen(objects)
-           
+                stand = physics.gravity(entity, objects)
+                menu.update_screen(objects)
         keys_pressed = pygame.key.get_pressed()
         player.movement_handle(keys_pressed, objects)
         menu.update_screen(objects)

@@ -4,19 +4,23 @@ import math
 import time
 
 
-def gravity(moveable,objects):
+def gravity(entity, objects):
     stand = 0
     objects = objects.copy()
-    objects.remove(moveable)
+    objects.remove(entity)
     
-    while stand == 0:
-        support1 = (moveable.x+1,moveable.y+moveable.height)
-        support2 = (moveable.x+moveable.width-1,moveable.y + moveable.height)
-        print(support1)
-        for object in objects:
-            if object.get_rigid().collidepoint(support1) or object.get_rigid().collidepoint(support2):
-                stand+=1
-        if stand == 0:
-            moveable.fall()
-            pygame.time.delay(20)
-            
+    support1 = (entity.x+1,entity.y+entity.height)
+    support2 = (entity.x+entity.width-1,entity.y + entity.height)
+    for object in objects:
+        if object.get_rigid().collidepoint(support1) or object.get_rigid().collidepoint(support2):
+            stand+=1
+    if stand == 0:
+        entity.fall()
+        if entity.direction == 'right':
+            entity.x += 5
+            pygame.time.delay(15)
+        if entity.direction == 'left':
+            entity.x -= 5
+            pygame.time.delay(15)
+
+    return stand 
