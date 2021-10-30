@@ -131,7 +131,7 @@ class Player:
                 self.y -= 15
                 pygame.time.delay(10)
                 delta -= 15
-                menu.update_screen(objects)
+                stage.update_screen(objects)
         elif self.state == "Human":
             self.y -= 50
 
@@ -321,8 +321,9 @@ class Button:
 """Game's starting session"""
 if __name__ == "__main__":
     pygame.init()
-    menu = Window(1920, 1080, "Oles.mp3", "space.png")
-    menu.play_audio("start")
+    main_window.menu()
+    stage = Window(1920, 1080, "Oles.mp3", "space.png")
+    stage.play_audio("start")
     running = True
     objects = []
     moveable = []
@@ -343,26 +344,26 @@ if __name__ == "__main__":
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_s:
-                    menu.play_audio("stop")
+                    stage.play_audio("stop")
                 if event.key == pygame.K_p:
-                    menu.play_audio("play")
+                    stage.play_audio("play")
                 if event.key == pygame.K_LEFT:
-                    menu.move_background(-10)
+                    stage.move_background(-10)
                     for object in objects_unmoveable:
                         object.move_road(-10)
                         object.get_rigid().move(-10, 0)
                 if event.key == pygame.K_RIGHT:
-                    menu.move_background(10)
+                    stage.move_background(10)
                     for object in objects_unmoveable:
                         object.move_road(10)
                         object.get_rigid().move(10, 0)
                 if event.key == pygame.K_UP:
                     if stand == 1:
                         player.jump()
-                        menu.update_screen(objects)
+                        stage.update_screen(objects)
                         stand = 0
         for entity in moveable:
-            menu.update_screen(objects)
+            stage.update_screen(objects)
             # physics.gravity(entity, objects)
             stand = 0
             # objects_unmoveable = objects.copy()
@@ -383,6 +384,6 @@ if __name__ == "__main__":
                 if stand == 0:
                     entity.fall()
                     pygame.time.delay(5)
-                    menu.update_screen(objects)
+                    stage.update_screen(objects)
 
-        menu.update_screen(objects)
+        stage.update_screen(objects)
