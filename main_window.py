@@ -29,7 +29,6 @@ def menu():
                             return button.get_caption()
 
         main_menu.update_screen(objects)
-        pygame.display.update()
 
 
 if __name__ == "__main__":
