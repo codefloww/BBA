@@ -287,6 +287,7 @@ class Wolf(Player):
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
         self.running_animation = True
         self.jumping_animation = True
+        self.flip = False
         self.running_sprites = [f'Assets/guy/guy_run{i}.png' for i in range(1, 5)]
         self.current_run_image = 0
         self.current_jump_image = 0
@@ -318,13 +319,18 @@ class Wolf(Player):
 
     def animate_run(self, speed):
         if self.running_animation:
+            if self.direction == 'right':
+                self.flip = False
+            elif self.direction == 'left':
+                self.flip = True
             self.current_run_image += speed
 
             if self.current_run_image >= len(self.running_sprites):
                 self.current_run_image = 0
 
-            self.texture = pygame.transform.scale(
-            pygame.image.load(self.running_sprites[int(self.current_run_image)]), (self.width, self.height))
+            self.texture = pygame.transform.flip(pygame.transform.scale(
+            pygame.image.load(self.running_sprites[int(self.current_run_image)]), (self.width, self.height)),
+            self.flip, False)
 
     def animate_jump(self, speed):
         if self.jumping_animation:
@@ -481,12 +487,12 @@ class Dialog:
 
     def show_mob_dial(self, dial_text, player, stage):
         my_font = pygame.font.SysFont("comicsans", 40)
-        stage.screen.blit(self.texture, (player.get_x() + 50, player.get_y()))
+        stage.screen.blit(self.texture, (player.get_x() - player.get_width() / 2, player.get_y() - player.get_height() - 10))
         self.text = my_font.render(dial_text, True, (225, 255, 255))
         self.text = pygame.transform.scale(self.text, (self.width, self.height))
-        stage.screen.blit(self.text, (player.get_x() + 50, player.get_y() + 10))
+        stage.screen.blit(self.text, (player.get_x() - player.get_width() / 2, player.get_y() - player.get_height() - 10))
         pygame.display.update()
-        pygame.time.delay(5000)
+        pygame.time.delay(4000)
 
     def show_end_dial(self, dial_text, player, stage):
         my_font = pygame.font.SysFont("comicsans", 80)

@@ -23,7 +23,7 @@ def stage():
 
     clock = pygame.time.Clock()
     while running:
-        clock.tick(60)
+        clock.tick(120)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
