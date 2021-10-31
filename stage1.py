@@ -105,7 +105,7 @@ def stage():
                     player.hit(mobs)
                 if event.key == pygame.K_t:
                      player.change_state()
-                     player.animate_change_state()
+                     player.animate_change_state(objects, stage1)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                     player.running_animation = False
