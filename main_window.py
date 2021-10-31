@@ -14,10 +14,10 @@ def menu():
         "EXIT": ("exit1.jpg", "exit2.jpg"),
         "ABOUTUS": ("aboutus1.jpg", "aboutus2.jpg"),
     }
-    BUTTON_PLAY = main.Button(300, 100, BUTTON_IMAGES["PLAY"][0], 860, 400, "PLAY")
-    BUTTON_EXIT = main.Button(300, 100, BUTTON_IMAGES["EXIT"][0], 860, 550, "EXIT")
+    BUTTON_PLAY = main.Button(500, 100, BUTTON_IMAGES["PLAY"][0], 750, 400, "PLAY")
+    BUTTON_EXIT = main.Button(500, 100, BUTTON_IMAGES["EXIT"][0], 750, 550, "EXIT")
     BUTTON_ABOUT_US = main.Button(
-        300, 100, BUTTON_IMAGES["ABOUTUS"][0], 860, 700, "ABOUTUS"
+        500, 100, BUTTON_IMAGES["ABOUTUS"][0], 750, 700, "ABOUTUS"
     )
     objects.append(BUTTON_PLAY)
     objects.append(BUTTON_EXIT)
