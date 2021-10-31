@@ -7,7 +7,7 @@ pygame.mixer.init()
 
 
 def stage():
-    stage3 = main.Window(1920, 1080, "Beholder.mp3", "background3.jpg")
+    stage3 = main.Window(1920, 1080, "Enter.mp3", "background3.jpg")
     stage3.play_audio("start")
     running = True
     objects = []
