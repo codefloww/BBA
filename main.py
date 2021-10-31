@@ -148,6 +148,12 @@ class Player:
             if self.direction == "right":
                 t = 0
                 while delta > 0:
+                    if physics.stutter(self, objects)[1]:
+                        screen.move_background(-10)
+                        for object in objects_unmoveable:
+                            object.move(-10)
+                            screen.update_screen(objects)
+                        break
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
                     screen.move_background(15)
@@ -159,6 +165,12 @@ class Player:
             elif self.direction == "left":
                 t = 0
                 while delta > 0:
+                    if physics.stutter(self, objects)[0]:
+                        screen.move_background(10)
+                        for object in objects_unmoveable:
+                            object.move(10)
+                            screen.update_screen(objects)
+                        break
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
                     screen.move_background(-15)
@@ -167,6 +179,7 @@ class Player:
                     pygame.time.delay(15)
                     delta -= 15
                     screen.update_screen(objects)
+
             elif self.direction == None:
                 t = 0
                 while delta > 0:
@@ -187,7 +200,7 @@ class Player:
                 if walls_collision[1] != 1:
                     pygame.time.delay(15)
                     screen.move_background(10)
-                    self.direction = 'right'
+                    self.direction = "right"
                     for object in objects_unmoveable:
                         object.move(10)
 
@@ -195,10 +208,10 @@ class Player:
                 if walls_collision[0] != 1:
                     pygame.time.delay(15)
                     screen.move_background(-10)
-                    self.direction = 'left'
+                    self.direction = "left"
                     for object in objects_unmoveable:
                         object.move(-10)
-            
+
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
                 if stand == 1:
@@ -264,7 +277,7 @@ class Wolf(Player):
         self.height = 100
         self.texture = pygame.transform.scale(
             pygame.image.load(os.path.join("Assets", "red_square.png")),
-            (self.width * 1.15, self.height * 1.15),
+            (self.width, self.height),
         )
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
 
