@@ -70,9 +70,8 @@ def path(objects):
     sail2 = main.Road(k, 1000, "ground", 6000, 100, "ground.png")
     objects.append(sail2)
 
-
 def stage():
-    stage1 = main.Window(1920, 1080, "Oles.mp3", "background1.jpg")
+    stage1 = main.Window(1920, 1080, "Enter.mp3", "background1.jpg")
     stage1.play_audio("start")
     running = True
     objects = []
