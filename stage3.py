@@ -4,7 +4,7 @@ import pygame
 import physics
 pygame.mixer.init()
 def stage():
-    stage3 = main.Window(1920, 1080, "Beholder.mp3", "background1.jpg")
+    stage3 = main.Window(1920, 1080, "Beholder.mp3", "background3.jpg")
     stage3.play_audio("start")
     running = True
     objects = []
@@ -12,7 +12,7 @@ def stage():
     player = main.Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
-    soil1 = main.Road(100, 500, "ground", 500, 50)
+    soil1 = main.Road(100, 500, "ground", 900, 50)
     soil2 = main.Road(300, 400, "ground", 100, 100)
     objects.append(soil1)
     objects.append(soil2)
@@ -35,15 +35,14 @@ def stage():
             stage3.update_screen(objects)
             # physics.gravity(entity, objects)
             stand = 0
-            objects_unmoveable = objects.copy()
-            objects_unmoveable.remove(entity)
+            wall_collision = physics.stutter(entity, objects)
 
             while stand == 0 and entity.alive:
                 stand = physics.gravity(entity, objects, stage3)
                 entity.direction = None
                 stage3.update_screen(objects)
         keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects, stand, stage3)
+        player.movement_handle(keys_pressed, objects, stand, stage3,wall_collision)
         stage3.update_screen(objects)
 
         if not player.alive:
