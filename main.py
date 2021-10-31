@@ -50,7 +50,8 @@ class Window:
         """
         self.screen.blit(self.background, (self.x, self.y))
         for object in objects:
-            self.screen.blit(object.get_image(), (object.get_x(), object.get_y()))
+            self.screen.blit(object.get_image(),
+                             (object.get_x(), object.get_y()))
         pygame.display.update()
 
     def get_background(self):
@@ -100,13 +101,13 @@ class Player:
         self.stand = 0
         self.alive = True
         self.transform_h_to_w_sprites = ['Assets/transform_human_wolf/1standing_transformation.png',
-        'Assets/transform_human_wolf/2transformation_lightning.png',
-        'Assets/transform_human_wolf/3transformation_ball.png',
-        'Assets/transform_human_wolf/4transformation_wolf.png']
+                                         'Assets/transform_human_wolf/2transformation_lightning.png',
+                                         'Assets/transform_human_wolf/3transformation_ball.png',
+                                         'Assets/transform_human_wolf/4transformation_wolf.png']
         self.transform_w_to_h_sprites = ['Assets/transform_wolf_human/wolf_to_human1.png',
-        'Assets/transform_wolf_human/wolf_to_human2.png',
-        'Assets/transform_wolf_human/wolf_to_human3.png',
-        'Assets/transform_wolf_human/wolf_to_human4.png']
+                                         'Assets/transform_wolf_human/wolf_to_human2.png',
+                                         'Assets/transform_wolf_human/wolf_to_human3.png',
+                                         'Assets/transform_wolf_human/wolf_to_human4.png']
         self.current_transform_image = 0
         self.transforming_animation = False
 
@@ -140,33 +141,37 @@ class Player:
         self.state = "Human" if self.state == "Wolf" else "Wolf"
         self.transforming_animation = True
 
-    def animate_change_state(self):
+    def animate_change_state(self, objects, screen):
         if self.transforming_animation:
             if self.state == 'Wolf':
                 while self.transforming_animation:
-                    #pygame.time.delay(1)
+                    pygame.time.delay(50)
                     self.current_transform_image += 0.2
 
                     if self.current_transform_image >= len(self.transform_h_to_w_sprites):
                         self.transforming_animation = False
+                        self.current_transform_image = 0
                         break
-        
+
                     self.texture = pygame.transform.flip(pygame.transform.scale(
-                    pygame.image.load(self.transform_h_to_w_sprites[int(self.current_transform_image)]), (self.width, self.height)),
-                    self.flip, False)
+                        pygame.image.load(self.transform_h_to_w_sprites[int(self.current_transform_image)]), (self.width, self.height)),
+                        self.flip, False)
+                    screen.update_screen(objects)
 
             if self.state == 'Human':
                 while self.transforming_animation:
-                    #pygame.time.delay(1)
+                    pygame.time.delay(50)
                     self.current_transform_image += 0.2
 
                     if self.current_transform_image >= len(self.transform_h_to_w_sprites):
                         self.transforming_animation = False
+                        self.current_transform_image = 0
                         break
 
                     self.texture = pygame.transform.flip(pygame.transform.scale(
-                    pygame.image.load(self.transform_w_to_h_sprites[int(self.current_transform_image)]), (self.width, self.height)),
-                    self.flip, False)
+                        pygame.image.load(self.transform_w_to_h_sprites[int(self.current_transform_image)]), (self.width, self.height)),
+                        self.flip, False)
+                    screen.update_screen(objects)
 
     def get_x(self):
         return self.x
@@ -320,7 +325,7 @@ class Player:
                     self.jump(objects, screen)
                     screen.update_screen(objects)
                 #self.jumping_animation = False
-        
+
         if self.state == "Wolf":
             if keys_pressed[pygame.K_RIGHT]:
                 self.standing_animation = False
@@ -345,7 +350,7 @@ class Player:
                         object.move(-10)
                 self.animate_run(0.34)
                 #self.running_animation = False
-            
+
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
                 if stand == 1:
@@ -372,7 +377,8 @@ class Wolf(Player):
         self.width = 100
         self.height = 100
         self.texture = pygame.transform.scale(
-            pygame.image.load(os.path.join('Assets', 'wolf_standing', 'wolf_standing_final.png')),
+            pygame.image.load(os.path.join(
+                'Assets', 'wolf_standing', 'wolf_standing_final.png')),
             (self.width, self.height),
         )
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -426,15 +432,21 @@ class Human(Player):
         self.jumping_animation = False
         self.standing_animation = False
         self.flip = False
-        self.running_sprites = [f"Assets/guy/guy_run{i}.png" for i in range(1, 5)]
+        self.running_sprites = [
+            f"Assets/guy/guy_run{i}.png" for i in range(1, 5)]
         self.current_run_image = 0
         self.current_jump_image = 0
-        self.jumping_sprites = [f"Assets/guy/guy_jump{i}.png" for i in range(1, 7)]
+        self.jumping_sprites = [
+            f"Assets/guy/guy_jump{i}.png" for i in range(1, 7)]
         self.current_stand_image = 0
-        self.standing_sprites = [f'Assets/guy/guy_standing{i}.png' for i in range(1, 4)]
-        self.running_wolf_sprites = [f'Assets/wolf_run/wolf_run{i}.png' for i in range(1, 5)]
-        self.standing_wolf_sprites = [f'Assets/wolf_standing/wolf_standing{i}.png' for i in range(1, 3)]
-        self.standing_sprites = [f"Assets/guy/guy_standing{i}.png" for i in range(1, 4)]
+        self.standing_sprites = [
+            f'Assets/guy/guy_standing{i}.png' for i in range(1, 4)]
+        self.running_wolf_sprites = [
+            f'Assets/wolf_run/wolf_run{i}.png' for i in range(1, 5)]
+        self.standing_wolf_sprites = [
+            f'Assets/wolf_standing/wolf_standing{i}.png' for i in range(1, 3)]
+        self.jumping_wolf_sprites = [
+            f"Assets/wolf_jump/wolf_jump{i}.png" for i in range(1, 5)]
         self.damage = 10
 
     def get_image(self):
@@ -474,22 +486,24 @@ class Human(Player):
                     self.current_run_image = 0
 
                 self.texture = pygame.transform.flip(pygame.transform.scale(
-                pygame.image.load(self.running_sprites[int(self.current_run_image)]), (self.width, self.height)),
-                self.flip, False)
+                    pygame.image.load(self.running_sprites[int(self.current_run_image)]), (self.width, self.height)),
+                    self.flip, False)
+
             elif self.state == 'Wolf':
                 if self.current_run_image >= len(self.running_wolf_sprites):
                     self.current_run_image = 0
 
-            self.texture = pygame.transform.flip(
-                pygame.transform.scale(
-                    pygame.image.load(
-                        self.running_sprites[int(self.current_run_image)]
+                self.texture = pygame.transform.flip(
+                    pygame.transform.scale(
+                        pygame.image.load(
+                            self.running_wolf_sprites[int(
+                                self.current_run_image)]
+                        ),
+                        (self.width, self.height),
                     ),
-                    (self.width, self.height),
-                ),
-                self.flip,
-                False,
-            )
+                    self.flip,
+                    False,
+                )
 
     def animate_jump(self, speed):
         if self.jumping_animation:
@@ -499,19 +513,36 @@ class Human(Player):
                 self.flip = True
             self.current_jump_image += speed
 
-            if self.current_jump_image >= len(self.jumping_sprites):
-                self.current_jump_image = 0
+            if self.state == 'Human':
+                if self.current_jump_image >= len(self.jumping_sprites):
+                    self.current_jump_image = 0
 
-            self.texture = pygame.transform.flip(
-                pygame.transform.scale(
-                    pygame.image.load(
-                        self.jumping_sprites[int(self.current_jump_image)]
+                self.texture = pygame.transform.flip(
+                    pygame.transform.scale(
+                        pygame.image.load(
+                            self.jumping_sprites[int(self.current_jump_image)]
+                        ),
+                        (self.width, self.height),
                     ),
-                    (self.width, self.height),
-                ),
-                self.flip,
-                False,
-            )
+                    self.flip,
+                    False,
+                )
+
+            elif self.state == 'Wolf':
+                if self.current_jump_image >= len(self.jumping_wolf_sprites):
+                    self.current_jump_image = 0
+
+                self.texture = pygame.transform.flip(
+                    pygame.transform.scale(
+                        pygame.image.load(
+                            self.jumping_wolf_sprites[int(
+                                self.current_jump_image)]
+                        ),
+                        (self.width, self.height),
+                    ),
+                    self.flip,
+                    False,
+                )
 
     def animate_stand(self, speed):
         if self.standing_animation:
@@ -526,15 +557,15 @@ class Human(Player):
                     self.current_stand_image = 0
 
                 self.texture = pygame.transform.flip(pygame.transform.scale(
-                pygame.image.load(self.standing_sprites[int(self.current_stand_image)]), (self.width, self.height)),
-                self.flip, False)
+                    pygame.image.load(self.standing_sprites[int(self.current_stand_image)]), (self.width, self.height)),
+                    self.flip, False)
             if self.state == 'Wolf':
                 if self.current_stand_image >= len(self.standing_wolf_sprites):
                     self.current_stand_image = 0
 
                 self.texture = pygame.transform.flip(pygame.transform.scale(
-                pygame.image.load(self.standing_wolf_sprites[int(self.current_stand_image)]), (self.width, self.height)),
-                self.flip, False)
+                    pygame.image.load(self.standing_wolf_sprites[int(self.current_stand_image)]), (self.width, self.height)),
+                    self.flip, False)
 
     def animate(self):
         self.is_animating = True
@@ -562,7 +593,6 @@ class Human(Player):
         for mob in mobs:
             if self.get_rigid().inflate(401, 401).colliderect(mob.get_rigid()):
                 mob.get_hit(self.damage)
-
 
 
 class Story:
@@ -718,7 +748,8 @@ class Button:
     def clicked(self, clicked_image, screen):
         self.state = "active"
         self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", "buttons", clicked_image)),
+            pygame.image.load(os.path.join(
+                "Assets", "buttons", clicked_image)),
             (self.width, self.height),
         )
         screen.screen.blit(self.background, (self.x, self.y))
@@ -761,7 +792,8 @@ class Dialog:
             ),
         )
         self.text = my_font.render(dial_text, True, (225, 255, 255))
-        self.text = pygame.transform.scale(self.text, (self.width, self.height))
+        self.text = pygame.transform.scale(
+            self.text, (self.width, self.height))
         stage.screen.blit(
             self.text,
             (
@@ -780,7 +812,8 @@ class Dialog:
         stage.screen.blit(blur, (0, 0))
         stage.screen.blit(self.texture, (300, 200))
         self.text = my_font.render(dial_text, True, (225, 255, 255))
-        self.text = pygame.transform.scale(self.text, (self.width, self.height))
+        self.text = pygame.transform.scale(
+            self.text, (self.width, self.height))
         stage.screen.blit(
             self.text, (player.get_x(), player.get_y() - self.height - 10)
         )
