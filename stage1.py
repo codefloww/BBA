@@ -13,7 +13,8 @@ def stage():
     running = True
     objects = []
     moveable = []  # Each moveable object, basically mobs and player
-    dialogable = [] # each object that we can have a dialog with
+    dialogable = []  # each object that we can have a dialog with
+    mobs = []
     player = main.Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
@@ -21,9 +22,10 @@ def stage():
     soil2 = main.Road(300, 400, "ground", 100, 300)
     objects.append(soil1)
     objects.append(soil2)
-    priest = main.Mobs(400,400,100,80,'priest.png')
+    priest = main.Mobs(400, 400, 100, 80, "priest.png")
     priest.dialogable()
     objects.append(priest)
+    mobs.append(priest)
     dialogable.append(priest)
     clock = pygame.time.Clock()
     while running:
@@ -42,7 +44,8 @@ def stage():
                     dial.show_mob_dial(
                         "I was here since a long time ago", player, stage1
                     )
-                if event.key == pygame.K_d
+                if event.key == pygame.K_f:
+                    player.hit(mobs)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                     player.running_animation = False
@@ -61,13 +64,22 @@ def stage():
 
         keys_pressed = pygame.key.get_pressed()
         player.movement_handle(keys_pressed, objects, stand, stage1, wall_collision)
-     
+        for mob in mobs:
+            if mob.get_health() < 0:
+                mob.alive = False
         stage1.update_screen(objects)
 
-        player.standing_animation = (not player.running_animation) & (not player.jumping_animation)
+        player.standing_animation = (not player.running_animation) & (
+            not player.jumping_animation
+        )
         if player.standing_animation:
             player.animate_stand(0.05)
 
+        for mob in mobs:
+            if not mob.alive:
+                mobs.remove(mob)
+                dialogable.remove(mob)
+                objects.remove(mob)
         if not player.alive:
             running = False
             return player.alive
