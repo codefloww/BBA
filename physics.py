@@ -35,10 +35,10 @@ def stutter(entity, objects):
     objects = objects.copy()
     objects.remove(entity)
 
-    support_left1 = (entity.get_x(), entity.get_y() + 10)
-    support_left2 = (entity.get_x(), entity.get_y() + entity.get_height() - 10)
-    support_right1 = (entity.get_x() + entity.get_width(), entity.get_y() + 10)
-    support_right2 = (entity.get_x() + entity.get_width(), entity.get_y() + entity.get_height() - 10)
+    support_left1 = (entity.get_x()-10, entity.get_y()+15)
+    support_left2 = (entity.get_x()-10, entity.get_y() + entity.get_height() - 20)
+    support_right1 = (entity.get_x()+10 + entity.get_width(), entity.get_y() + 15)
+    support_right2 = (entity.get_x()+10 + entity.get_width(), entity.get_y() + entity.get_height() - 20)
 
     for object in objects:
         if object.get_rigid().collidepoint(support_left1) or object.get_rigid().collidepoint(support_left2):

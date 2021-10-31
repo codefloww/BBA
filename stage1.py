@@ -8,7 +8,7 @@ pygame.font.init()
 
 
 def stage():
-    stage1 = main.Window(1920, 1080, "Beholder.mp3", "background1.jpg")
+    stage1 = main.Window(1920, 1080, "Oles.mp3", "background1.jpg")
     stage1.play_audio("start")
     running = True
     objects = []
@@ -17,7 +17,7 @@ def stage():
     moveable.append(player)
     objects.append(player)
     soil1 = main.Road(100, 500, "ground", 500, 50)
-    soil2 = main.Road(300, 400, "ground", 100, 100)
+    soil2 = main.Road(300, 400, "ground", 100, 300)
     objects.append(soil1)
     objects.append(soil2)
 
