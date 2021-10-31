@@ -17,7 +17,7 @@ def stage():
     player = main.Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
-    soil1 = main.Road(100, 500, "ground", 900, 50)
+    soil1 = main.Road(0, 500, "ground", 900, 50)
     soil2 = main.Road(300, 400, "ground", 100, 300)
     objects.append(soil1)
     objects.append(soil2)
@@ -42,6 +42,7 @@ def stage():
                     dial.show_mob_dial(
                         "I was here since a long time ago", player, stage1
                     )
+                if event.key == pygame.K_d
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                     player.running_animation = False
