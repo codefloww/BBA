@@ -98,6 +98,7 @@ class Player:
         self.direction = None
         self.stand = 0
         self.alive = True
+
     def get_health(self):
         return self.health
         
@@ -154,6 +155,7 @@ class Player:
                     for object in objects_unmoveable:
                         object.move(15)
                     pygame.time.delay(15)
+                    self.animate_jump(0.5)
                     delta -= 15
                     screen.update_screen(objects)
             elif self.direction == 'left':
@@ -165,6 +167,7 @@ class Player:
                     for object in objects_unmoveable:
                         object.move(-15)
                     pygame.time.delay(15)
+                    self.animate_jump(0.5)
                     delta -= 15
                     screen.update_screen(objects)
             elif self.direction == None:
@@ -173,6 +176,7 @@ class Player:
                     self.y = starting_y + (1 * t * (t - 20))
                     t += 1
                     pygame.time.delay(15)
+                    self.animate_jump(0.5)
                     delta -= 15
                     screen.update_screen(objects)
         elif self.state == 'Human':
@@ -189,6 +193,7 @@ class Player:
                     self.direction = 'right'
                     for object in objects_unmoveable:
                         object.move(10)
+                self.animate_run(0.34)
 
             if keys_pressed[pygame.K_LEFT]:
                 if walls_collision[0] != 1:
@@ -197,6 +202,7 @@ class Player:
                     self.direction = 'left'
                     for object in objects_unmoveable:
                         object.move(-10)
+                self.animate_run(0.34)
             
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
@@ -264,10 +270,15 @@ class Wolf(Player):
         self.height = 100
         self.texture = pygame.transform.scale(
             pygame.image.load(os.path.join("Assets", "red_square.png")),
-            (self.width * 1.15, self.height * 1.15),
-        )
+            (self.width, self.height),)
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
-
+        self.running_animation = True
+        self.jumping_animation = True
+        self.running_sprites = [f'Assets/guy_run/guy_run{i}.png' for i in range(1, 5)]
+        self.current_run_image = 0
+        self.current_jump_image = 0
+        self.jumping_sprites = [f'Assets/guy_jump/guy_jump{i}.png' for i in range(1, 7)]
+        
     def get_image(self):
         return self.texture
 
@@ -288,6 +299,63 @@ class Wolf(Player):
         """
         self.x -= vel
         self.rigid = self.rigid.move(-1 * vel, 0)
+    
+    def change_animation_state(self):
+        self.running_animation = 1 - self.running_animation
+
+    def animate_run(self, speed):
+        if self.running_animation:
+            self.current_run_image += speed
+
+            if self.current_run_image >= len(self.running_sprites):
+                self.current_run_image = 0
+
+            self.texture = pygame.transform.scale(
+            pygame.image.load(self.running_sprites[int(self.current_run_image)]), (self.width, self.height))
+
+    def animate_jump(self, speed):
+        if self.jumping_animation:
+            self.current_jump_image += speed
+
+            if self.current_jump_image >= len(self.jumping_sprites):
+                self.current_jump_image = 0
+
+            self.texture = pygame.transform.scale(
+            pygame.image.load(self.jumping_sprites[int(self.current_jump_image)]), (self.width, self.height))
+
+
+
+
+class Wolf_sprite(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height) -> None:
+        super().__init__()
+        self.sprites = []
+        self.is_animating = False
+        self.width = width
+        self.height = height
+        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
+            (self.width * 1.15, self.height * 1.15)))
+        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
+            (self.width * 1.15, self.height * 1.15)))
+        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
+            (self.width * 1.15, self.height * 1.15)))
+        self.current_sprite = 0
+        self.image = self.sprites[self.current_sprite]
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [x, y]
+
+    def animate(self):
+        self.is_animating = True
+
+    def update(self, speed) -> None:
+        if self.is_animating == True:
+            self.current_sprite += speed
+
+            if self.current_sprite >= len(self.sprites):
+                self.current_sprite = 0
+
+            self.image = self.sprites[int(self.current_sprite)]
 
 
 class Story:

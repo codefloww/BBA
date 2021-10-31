@@ -16,8 +16,6 @@ def stage():
     soil2 = main.Road(300, 400, "ground", 100, 100)
     objects.append(soil1)
     objects.append(soil2)
-    objects_unmoveable = objects.copy()
-    objects_unmoveable.remove(player)
     clock = pygame.time.Clock()
 
     while running:
@@ -34,8 +32,6 @@ def stage():
         for entity in moveable:
             stage1.update_screen(objects)
             stand = 0
-            objects_unmoveable = objects.copy()
-            objects_unmoveable.remove(entity)
             wall_collision = physics.stutter(entity, objects)
 
             while stand == 0 and entity.alive:
