@@ -2,7 +2,10 @@ import main
 import os
 import pygame
 import physics
+
 pygame.mixer.init()
+
+
 def stage():
     stage2 = main.Window(1920, 1080, "Beholder.mp3", "background2.jpg")
     stage2.play_audio("start")
@@ -21,7 +24,7 @@ def stage():
     clock = pygame.time.Clock()
 
     while running:
-        clock.tick(60)
+        clock.tick(120)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -42,7 +45,7 @@ def stage():
                 entity.direction = None
                 stage2.update_screen(objects)
         keys_pressed = pygame.key.get_pressed()
-        player.movement_handle(keys_pressed, objects, stand, stage2,wall_collision)
+        player.movement_handle(keys_pressed, objects, stand, stage2, wall_collision)
         stage2.update_screen(objects)
 
         if not player.alive:
@@ -50,5 +53,5 @@ def stage():
             return player.alive
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     stage()
