@@ -334,13 +334,18 @@ class Wolf(Player):
 
     def animate_jump(self, speed):
         if self.jumping_animation:
+            if self.direction == 'right':
+                self.flip = False
+            elif self.direction == 'left':
+                self.flip = True
             self.current_jump_image += speed
 
             if self.current_jump_image >= len(self.jumping_sprites):
                 self.current_jump_image = 0
 
-            self.texture = pygame.transform.scale(
-            pygame.image.load(self.jumping_sprites[int(self.current_jump_image)]), (self.width, self.height))
+            self.texture = pygame.transform.flip(pygame.transform.scale(
+            pygame.image.load(self.jumping_sprites[int(self.current_jump_image)]), (self.width, self.height)),
+            self.flip, False)
 
 
 
