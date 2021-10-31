@@ -9,15 +9,67 @@ pygame.font.init()
 
 def path(objects):
     k=1
-    length = main.Road(k, 1000, "ground", 17000, 100, "ground.png")
+    length = main.Road(k, 1000, "ground", 4000, 100, "ground.png")
     objects.append(length)
-    k+=500
+    length = main.Road(4151, 1000, "ground", 1800, 100, "ground.png")
+    objects.append(length)
+    k+=1000
 
-    sail1 = main.Road(k, 900, "ground", 150, 100, "ground.png")
+    sail1 = main.Road(k, 905, "ground", 150, 100, "ground.png")
+    objects.append(sail1)
+    k+=1200
+    sail1 = main.Road(k, 905, "ground", 150, 100, "ground.png")
     objects.append(sail1)
     k+=300
-    sail2 = main.Road(k, 800, "ground", 150, 100, "ground.png")
+    sail2 = main.Road(k, 805, "ground", 150, 100, "ground.png")
     objects.append(sail2)
+
+    k+=1200
+    sail1 = main.Road(k, 905, "ground", 150, 100, "ground.png")
+    objects.append(sail1)
+    k+=300
+    sail2 = main.Road(k, 805, "ground", 150, 100, "ground.png")
+    objects.append(sail2)
+    k+=1000
+
+    # сюди моба. на к координату по х
+    
+    k+=1000
+    sail1 = main.Road(k, 905, "ground", 200, 100, "ground.png")
+    objects.append(sail1)
+    k+=301
+    sail2 = main.Road(k, 805, "ground", 200, 100, "ground.png")
+    objects.append(sail2)
+    k+=301
+    sail1 = main.Road(k, 705, "ground", 200, 100, "ground.png")
+    objects.append(sail1)
+    k+=301
+    sail2 = main.Road(k, 605, "ground", 200, 100, "ground.png")
+    objects.append(sail2)
+    k+=301
+    sail2 = main.Road(k, 505, "ground", 900, 100, "ground.png")
+    objects.append(sail2)
+    k+=400
+    # mob
+    k+=700
+    sail2 = main.Road(k, 505, "ground", 200, 100, "ground.png")
+    objects.append(sail2)
+    k+=350
+    sail1 = main.Road(k, 605, "ground", 200, 100, "ground.png")
+    objects.append(sail1)
+    k+=351
+    sail2 = main.Road(k, 705, "ground", 200, 100, "ground.png")
+    objects.append(sail2)
+    k+=351
+    sail1 = main.Road(k, 805, "ground", 200, 100, "ground.png")
+    objects.append(sail1)
+    k+=351
+    sail2 = main.Road(k, 905, "ground", 200, 100, "ground.png")
+    objects.append(sail2)
+    k+=350
+    sail2 = main.Road(k, 1000, "ground", 6000, 100, "ground.png")
+    objects.append(sail2)
+    
 
 def stage():
     stage1 = main.Window(1920, 1080, "Oles.mp3", "background1.jpg")
@@ -27,7 +79,7 @@ def stage():
     moveable = []  # Each moveable object, basically mobs and player
     dialogable = [] # each object that we can have a dialog with
     mobs = []
-    player = main.Human(100, 100, 100, 10, "Human")
+    player = main.Human(400, 100, 100, 10, "Human")
     moveable.append(player)
     objects.append(player)
     path(objects)
