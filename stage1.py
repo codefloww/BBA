@@ -13,6 +13,7 @@ def stage():
     running = True
     objects = []
     moveable = []  # Each moveable object, basically mobs and player
+    dialogable = [] # each object that we can have a dialog with
     player = main.Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
@@ -20,7 +21,10 @@ def stage():
     soil2 = main.Road(300, 400, "ground", 100, 300)
     objects.append(soil1)
     objects.append(soil2)
-
+    priest = main.Mobs(400,400,100,80,'priest.png')
+    priest.dialogable()
+    objects.append(priest)
+    dialogable.append(priest)
     clock = pygame.time.Clock()
     while running:
         clock.tick(120)
@@ -33,7 +37,7 @@ def stage():
                     stage1.play_audio("stop")
                 if event.key == pygame.K_p:
                     stage1.play_audio("play")
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d and player.dialog_possible(dialogable):
                     dial = main.Dialog(0)
                     dial.show_mob_dial(
                         "I was here since a long time ago", player, stage1
@@ -56,6 +60,7 @@ def stage():
 
         keys_pressed = pygame.key.get_pressed()
         player.movement_handle(keys_pressed, objects, stand, stage1, wall_collision)
+     
         stage1.update_screen(objects)
 
         player.standing_animation = (not player.running_animation) & (not player.jumping_animation)

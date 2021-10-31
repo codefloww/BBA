@@ -249,7 +249,7 @@ class Human(Player):
         self.width = 100
         self.height = 100
         self.texture = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", "space.png")),
+            pygame.image.load(os.path.join('Assets', 'guy','guy_standing.png')),
             (self.width, self.height),
         )
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -298,12 +298,12 @@ class Wolf(Player):
         self.jumping_animation = False
         self.standing_animation = False
         self.flip = False
-        self.running_sprites = [f'Assets/guy/guy_run{i}.png' for i in range(1, 5)]
+        self.running_sprites = [f'Assets/guy_run/guy_run{i}.png' for i in range(1, 5)]
         self.current_run_image = 0
         self.current_jump_image = 0
-        self.jumping_sprites = [f'Assets/guy/guy_jump{i}.png' for i in range(1, 7)]
+        self.jumping_sprites = [f'Assets/guy_jump/guy_jump{i}.png' for i in range(1, 7)]
         self.current_stand_image = 0
-        self.standing_sprites = [f'Assets/guy/guy_standing{i}.png' for i in range(1, 4)]
+        self.standing_sprites = [f'Assets/guy_standing/guy_standing{i}.png' for i in range(1, 4)]
         
     def get_image(self):
         return self.texture
@@ -387,6 +387,13 @@ class Wolf(Player):
 
             self.image = self.sprites[int(self.current_sprite)]
 
+    def dialog_possible(self,dialogable):
+        available_dialog = 0
+        for mob in dialogable:
+            if self.get_rigid().colliderect(mob.get_rigid().inflate(500,500)) and mob.dialogs:
+                available_dialog+=1
+        return available_dialog
+
 
 class Story:
     def __init__(self) -> None:
@@ -394,8 +401,61 @@ class Story:
 
 
 class Mobs:
-    def __init__(self) -> None:
-        pass
+    def __init__(self,x,y,width,height,texture) -> None:
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.rigid = pygame.Rect(self.x,self.y,self.width,self.height)
+        self.texture = pygame.transform.scale(pygame.image.load(os.path.join(
+            'Assets','Mobes',texture)),(self.width,self.height))
+        self.dialogs = False
+        self.alive = True
+
+    def with_health(self,health):
+        self.health = health
+
+    def with_damage(self,damage):
+        self.damage = damage
+
+    def get_hit(self, hit):
+        self.health -= hit
+
+    def get_health(self):
+        return self.health
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
+
+    def get_width(self):
+        """returns width of block"""
+        return self.width
+
+    def get_height(self):
+        """returns height of block"""
+        return self.height
+
+    def get_rigid(self):
+        return self.rigid
+
+    def get_image(self):
+        return self.texture 
+
+    def dialogable(self):
+        self.dialogs = True
+
+    def move(self, vel):
+        """Implementation of parallax effect, moves bg instead of player
+
+        Args:
+            vel (int): player's velocity
+        """
+        self.x -= vel
+        self.rigid = self.rigid.move(-1 * vel, 0)
+
 
 
 class Road:
@@ -483,12 +543,15 @@ class Button:
     def get_rigid(self):
         return self.rigid
 
-    def clicked(self, clicked_image):
+    def clicked(self, clicked_image,screen):
         self.state = "active"
         self.background = pygame.transform.scale(
             pygame.image.load(os.path.join('Assets','buttons', clicked_image)),
             (self.width, self.height),
         )
+        screen.screen.blit(self.background,(self.x,self.y))
+        pygame.time.delay(20)
+        pygame.display.update()
 
     def get_image(self):
         return self.background

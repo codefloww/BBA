@@ -26,7 +26,7 @@ def menu():
                     pos = pygame.mouse.get_pos()
                     for button in objects:
                         if button.get_rigid().collidepoint(pos):
-                            button.clicked(BUTTON_IMAGES[button.get_caption()][1])
+                            button.clicked(BUTTON_IMAGES[button.get_caption()][1],main_menu)
                             running = False
                             return button.get_caption()
 
