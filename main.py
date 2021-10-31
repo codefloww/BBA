@@ -426,7 +426,7 @@ class Human(Player):
     def dialog_possible(self,dialogable):
         available_dialog = 0
         for mob in dialogable:
-            if self.get_rigid().colliderect(mob.get_rigid().inflate(500,500)) and mob.dialogs:
+            if self.get_rigid().colliderect(mob.get_rigid().inflate(405,405)) and mob.dialogs:
                 available_dialog+=1
         return available_dialog
 
@@ -506,7 +506,7 @@ class Road:
             y (int): y coordinate of block
             type (str): type of road
             width (int): width of road
-            height (int): height of block
+            height (int): height of bguy_standinglock
             texture (str, optional): name of texture's file in Assets
             directory. Defaults to 'green_square.png'.
         """

@@ -17,7 +17,7 @@ def stage():
     player = main.Human(100, 100, 100, 10, "Human")
     moveable.append(player)
     objects.append(player)
-    soil1 = main.Road(100, 500, "ground", 900, 50)
+    soil1 = main.Road(0, 500, "ground", 900, 50)
     soil2 = main.Road(300, 400, "ground", 100, 300)
     objects.append(soil1)
     objects.append(soil2)
