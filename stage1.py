@@ -38,6 +38,11 @@ def stage():
                     dial.show_mob_dial(
                         "I was here since a long time ago", player, stage1
                     )
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
+                    player.running_animation = False
+                if event.key == pygame.K_UP:
+                    player.jumping_animation = False
 
         for entity in moveable:
             stage1.update_screen(objects)
@@ -52,6 +57,10 @@ def stage():
         keys_pressed = pygame.key.get_pressed()
         player.movement_handle(keys_pressed, objects, stand, stage1, wall_collision)
         stage1.update_screen(objects)
+
+        player.standing_animation = (not player.running_animation) & (not player.jumping_animation)
+        if player.standing_animation:
+            player.animate_stand(0.05)
 
         if not player.alive:
             running = False

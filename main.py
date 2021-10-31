@@ -200,6 +200,8 @@ class Player:
         objects_unmoveable.remove(self)
         if self.state == "Wolf":
             if keys_pressed[pygame.K_RIGHT]:
+                self.standing_animation = False
+                self.running_animation = True
                 if walls_collision[1] != 1:
                     pygame.time.delay(15)
                     screen.move_background(10)
@@ -207,8 +209,11 @@ class Player:
                     for object in objects_unmoveable:
                         object.move(10)
                 self.animate_run(0.34)
+                #self.running_animation = False
 
             if keys_pressed[pygame.K_LEFT]:
+                self.standing_animation = False
+                self.running_animation = True
                 if walls_collision[0] != 1:
                     pygame.time.delay(15)
                     screen.move_background(-10)
@@ -216,13 +221,17 @@ class Player:
                     for object in objects_unmoveable:
                         object.move(-10)
                 self.animate_run(0.34)
+                #self.running_animation = False
             
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
                 if stand == 1:
+                    self.standing_animation = False
+                    self.jumping_animation = True
                     stand = 0
                     self.jump(objects, screen)
                     screen.update_screen(objects)
+                #self.jumping_animation = False
 
 
 class Human(Player):
@@ -285,13 +294,16 @@ class Wolf(Player):
             (self.width, self.height),
         )
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.running_animation = True
-        self.jumping_animation = True
+        self.running_animation = False
+        self.jumping_animation = False
+        self.standing_animation = False
         self.flip = False
         self.running_sprites = [f'Assets/guy/guy_run{i}.png' for i in range(1, 5)]
         self.current_run_image = 0
         self.current_jump_image = 0
         self.jumping_sprites = [f'Assets/guy/guy_jump{i}.png' for i in range(1, 7)]
+        self.current_stand_image = 0
+        self.standing_sprites = [f'Assets/guy/guy_standing{i}.png' for i in range(1, 4)]
         
     def get_image(self):
         return self.texture
@@ -347,6 +359,20 @@ class Wolf(Player):
             pygame.image.load(self.jumping_sprites[int(self.current_jump_image)]), (self.width, self.height)),
             self.flip, False)
 
+    def animate_stand(self, speed):
+        if self.standing_animation:
+            if self.direction == 'right':
+                self.flip = False
+            elif self.direction == 'left':
+                self.flip = True
+            self.current_stand_image += speed
+
+            if self.current_stand_image >= len(self.standing_sprites):
+                self.current_stand_image = 0
+
+            self.texture = pygame.transform.flip(pygame.transform.scale(
+            pygame.image.load(self.standing_sprites[int(self.current_stand_image)]), (self.width, self.height)),
+            self.flip, False)
 
 
     def animate(self):
