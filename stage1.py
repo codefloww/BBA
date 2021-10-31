@@ -43,10 +43,8 @@ def stage():
                         "I was here since a long time ago", player, stage1
                     )
                 if event.key == pygame.K_t:
-                    player.change_state()
-                    player.animate_change_state()
-                    new_player = main.Wolf(player.get_x() + 10, player.get_y(), 100, player.get_bowe(), 'Human')
-                    #objects.append(new_player)
+                     player.change_state()
+                     player.animate_change_state()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                     player.running_animation = False

@@ -101,7 +101,10 @@ class Player:
         'Assets/transform_human_wolf/2transformation_lightning.png',
         'Assets/transform_human_wolf/3transformation_ball.png',
         'Assets/transform_human_wolf/4transformation_wolf.png']
-        self.transform_w_to_h_sprites = os.listdir('Assets/transform_wolf_human')
+        self.transform_w_to_h_sprites = ['Assets/transform_wolf_human/wolf_to_human1.png',
+        'Assets/transform_wolf_human/wolf_to_human2.png',
+        'Assets/transform_wolf_human/wolf_to_human3.png',
+        'Assets/transform_wolf_human/wolf_to_human4.png']
         self.current_transform_image = 0
         self.transforming_animation = False
 
@@ -139,28 +142,28 @@ class Player:
         if self.transforming_animation:
             if self.state == 'Wolf':
                 while self.transforming_animation:
-                    pygame.time.delay(5)
-                    self.current_transform_image += 0.05
+                    #pygame.time.delay(1)
+                    self.current_transform_image += 0.2
 
                     if self.current_transform_image >= len(self.transform_h_to_w_sprites):
                         self.transforming_animation = False
                         break
-
+        
                     self.texture = pygame.transform.flip(pygame.transform.scale(
                     pygame.image.load(self.transform_h_to_w_sprites[int(self.current_transform_image)]), (self.width, self.height)),
                     self.flip, False)
-                    
+
             if self.state == 'Human':
                 while self.transforming_animation:
-                    pygame.time.delay(5)
-                    self.current_transform_image += 0.05
+                    #pygame.time.delay(1)
+                    self.current_transform_image += 0.2
 
                     if self.current_transform_image >= len(self.transform_h_to_w_sprites):
                         self.transforming_animation = False
                         break
 
                     self.texture = pygame.transform.flip(pygame.transform.scale(
-                    pygame.image.load(self.transform_h_to_w_sprites[int(self.current_transform_image)]), (self.width, self.height)),
+                    pygame.image.load(self.transform_w_to_h_sprites[int(self.current_transform_image)]), (self.width, self.height)),
                     self.flip, False)
 
     def get_x(self):
@@ -229,12 +232,94 @@ class Player:
                     screen.update_screen(objects)
 
         elif self.state == "Wolf":
-            self.y -= 5
+            delta = 300
+            starting_y = self.get_y()
+            if self.direction == "right":
+                t = 0
+                while delta > 0:
+                    if physics.stutter(self, objects)[1]:
+                        screen.move_background(-10)
+                        for object in objects_unmoveable:
+                            object.move(-10)
+                            screen.update_screen(objects)
+                        break
+                    self.y = starting_y + (1 * t * (t - 20))
+                    t += 1
+                    screen.move_background(15)
+                    for object in objects_unmoveable:
+                        object.move(15)
+                    pygame.time.delay(15)
+                    self.animate_jump(0.5)
+                    delta -= 15
+                    screen.update_screen(objects)
+            elif self.direction == "left":
+                t = 0
+                while delta > 0:
+                    if physics.stutter(self, objects)[0]:
+                        screen.move_background(10)
+                        for object in objects_unmoveable:
+                            object.move(10)
+                            screen.update_screen(objects)
+                        break
+                    self.y = starting_y + (1 * t * (t - 20))
+                    t += 1
+                    screen.move_background(-15)
+                    for object in objects_unmoveable:
+                        object.move(-15)
+                    pygame.time.delay(15)
+                    self.animate_jump(0.5)
+                    delta -= 15
+                    screen.update_screen(objects)
+
+            elif self.direction == None:
+                t = 0
+                while delta > 0:
+                    self.y = starting_y + (1 * t * (t - 20))
+                    t += 1
+                    pygame.time.delay(15)
+                    self.animate_jump(0.5)
+                    delta -= 15
+                    screen.update_screen(objects)
 
     def movement_handle(self, keys_pressed, objects, stand, screen, walls_collision):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
         if self.state == "Human":
+            if keys_pressed[pygame.K_RIGHT]:
+                self.standing_animation = False
+                self.running_animation = True
+                if walls_collision[1] != 1:
+                    pygame.time.delay(15)
+                    screen.move_background(10)
+                    self.direction = "right"
+                    for object in objects_unmoveable:
+                        object.move(10)
+                self.animate_run(0.34)
+                #self.running_animation = False
+
+            if keys_pressed[pygame.K_LEFT]:
+                self.standing_animation = False
+                self.running_animation = True
+                if walls_collision[0] != 1:
+                    pygame.time.delay(15)
+                    screen.move_background(-10)
+                    self.direction = "left"
+                    for object in objects_unmoveable:
+                        object.move(-10)
+                self.animate_run(0.34)
+                #self.running_animation = False
+            
+            if keys_pressed[pygame.K_UP]:
+                pygame.time.delay(15)
+                if stand == 1:
+                    self.standing_animation = False
+                    self.jumping_animation = True
+                    stand = 0
+                    self.jump(objects, screen)
+                    screen.update_screen(objects)
+                #self.jumping_animation = False
+        
+        if self.state == "Wolf":
             if keys_pressed[pygame.K_RIGHT]:
                 self.standing_animation = False
                 self.running_animation = True
@@ -340,7 +425,9 @@ class Human(Player):
         self.jumping_sprites = [f'Assets/guy/guy_jump{i}.png' for i in range(1, 7)]
         self.current_stand_image = 0
         self.standing_sprites = [f'Assets/guy/guy_standing{i}.png' for i in range(1, 4)]
-        
+        self.running_wolf_sprites = [f'Assets/wolf_run/wolf_run{i}.png' for i in range(1, 5)]
+        self.standing_wolf_sprites = [f'Assets/wolf_standing/wolf_standing{i}.png' for i in range(1, 3)]
+
     def get_image(self):
         return self.texture
 
@@ -373,12 +460,20 @@ class Human(Player):
                 self.flip = True
             self.current_run_image += speed
 
-            if self.current_run_image >= len(self.running_sprites):
-                self.current_run_image = 0
+            if self.state == 'Human':
+                if self.current_run_image >= len(self.running_sprites):
+                    self.current_run_image = 0
 
-            self.texture = pygame.transform.flip(pygame.transform.scale(
-            pygame.image.load(self.running_sprites[int(self.current_run_image)]), (self.width, self.height)),
-            self.flip, False)
+                self.texture = pygame.transform.flip(pygame.transform.scale(
+                pygame.image.load(self.running_sprites[int(self.current_run_image)]), (self.width, self.height)),
+                self.flip, False)
+            elif self.state == 'Wolf':
+                if self.current_run_image >= len(self.running_wolf_sprites):
+                    self.current_run_image = 0
+
+                self.texture = pygame.transform.flip(pygame.transform.scale(
+                pygame.image.load(self.running_wolf_sprites[int(self.current_run_image)]), (self.width, self.height)),
+                self.flip, False)
 
     def animate_jump(self, speed):
         if self.jumping_animation:
@@ -403,12 +498,21 @@ class Human(Player):
                 self.flip = True
             self.current_stand_image += speed
 
-            if self.current_stand_image >= len(self.standing_sprites):
-                self.current_stand_image = 0
+            if self.state == 'Human':
+                if self.current_stand_image >= len(self.standing_sprites):
+                    self.current_stand_image = 0
 
-            self.texture = pygame.transform.flip(pygame.transform.scale(
-            pygame.image.load(self.standing_sprites[int(self.current_stand_image)]), (self.width, self.height)),
-            self.flip, False)
+                self.texture = pygame.transform.flip(pygame.transform.scale(
+                pygame.image.load(self.standing_sprites[int(self.current_stand_image)]), (self.width, self.height)),
+                self.flip, False)
+            if self.state == 'Wolf':
+                if self.current_stand_image >= len(self.standing_wolf_sprites):
+                    self.current_stand_image = 0
+
+                self.texture = pygame.transform.flip(pygame.transform.scale(
+                pygame.image.load(self.standing_wolf_sprites[int(self.current_stand_image)]), (self.width, self.height)),
+                self.flip, False)
+
 
 
     def animate(self):
