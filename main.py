@@ -770,7 +770,7 @@ class Button:
 
 
 class Dialog:
-    def __init__(self, kind, back="Assets/red_square.png"):
+    def __init__(self, kind, back="Assets/dialogue.png"):
         if kind == 0:
             self.width = 500
             self.height = 100
@@ -791,7 +791,7 @@ class Dialog:
                 player.get_y() - player.get_height() - 10,
             ),
         )
-        self.text = my_font.render(dial_text, True, (225, 255, 255))
+        self.text = my_font.render(dial_text, True, (0, 0, 0))
         self.text = pygame.transform.scale(
             self.text, (self.width, self.height))
         stage.screen.blit(
