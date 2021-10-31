@@ -287,10 +287,10 @@ class Wolf(Player):
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
         self.running_animation = True
         self.jumping_animation = True
-        self.running_sprites = [f'Assets/guy_run/guy_run{i}.png' for i in range(1, 5)]
+        self.running_sprites = [f'Assets/guy/guy_run{i}.png' for i in range(1, 5)]
         self.current_run_image = 0
         self.current_jump_image = 0
-        self.jumping_sprites = [f'Assets/guy_jump/guy_jump{i}.png' for i in range(1, 7)]
+        self.jumping_sprites = [f'Assets/guy/guy_jump{i}.png' for i in range(1, 7)]
         
     def get_image(self):
         return self.texture
@@ -337,26 +337,6 @@ class Wolf(Player):
             pygame.image.load(self.jumping_sprites[int(self.current_jump_image)]), (self.width, self.height))
 
 
-
-
-class Wolf_sprite(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height) -> None:
-        super().__init__()
-        self.sprites = []
-        self.is_animating = False
-        self.width = width
-        self.height = height
-        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
-            (self.width * 1.15, self.height * 1.15)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
-            (self.width * 1.15, self.height * 1.15)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
-            (self.width * 1.15, self.height * 1.15)))
-        self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
-
-        self.rect = self.image.get_rect()
-        self.rect.topleft = [x, y]
 
     def animate(self):
         self.is_animating = True
@@ -500,7 +480,7 @@ class Dialog:
         )
 
     def show_mob_dial(self, dial_text, player, stage):
-        my_font = pygame.font.SysFont("freesansbold.ttf", 40)
+        my_font = pygame.font.SysFont("comicsans", 40)
         stage.screen.blit(self.texture, (player.get_x() + 50, player.get_y()))
         self.text = my_font.render(dial_text, True, (225, 255, 255))
         self.text = pygame.transform.scale(self.text, (self.width, self.height))
@@ -509,7 +489,7 @@ class Dialog:
         pygame.time.delay(5000)
 
     def show_end_dial(self, dial_text, player, stage):
-        my_font = pygame.font.SysFont("freesansbold.ttf", 80)
+        my_font = pygame.font.SysFont("comicsans", 80)
         blur = pygame.Surface((1080, 1920))
         blur.fill((127, 127, 127))
         blur.set_alpha(100)
