@@ -2,7 +2,11 @@ import main
 import os
 import pygame
 import physics
+
 pygame.mixer.init()
+pygame.font.init()
+
+
 def stage():
     stage1 = main.Window(1920, 1080, "Beholder.mp3", "background1.jpg")
     stage1.play_audio("start")
@@ -16,10 +20,11 @@ def stage():
     soil2 = main.Road(300, 400, "ground", 100, 100)
     objects.append(soil1)
     objects.append(soil2)
-    clock = pygame.time.Clock()
 
+    clock = pygame.time.Clock()
     while running:
         clock.tick(60)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -28,6 +33,11 @@ def stage():
                     stage1.play_audio("stop")
                 if event.key == pygame.K_p:
                     stage1.play_audio("play")
+                if event.key == pygame.K_d:
+                    dial = main.Dialog(0)
+                    dial.show_mob_dial(
+                        "I was here since a long time ago", player, stage1
+                    )
 
         for entity in moveable:
             stage1.update_screen(objects)
@@ -48,5 +58,5 @@ def stage():
             return player.alive
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     stage()
