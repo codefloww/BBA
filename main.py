@@ -337,40 +337,6 @@ class Wolf(Player):
             pygame.image.load(self.jumping_sprites[int(self.current_jump_image)]), (self.width, self.height))
 
 
-
-
-class Wolf_sprite(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height) -> None:
-        super().__init__()
-        self.sprites = []
-        self.is_animating = False
-        self.width = width
-        self.height = height
-        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
-            (self.width * 1.15, self.height * 1.15)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
-            (self.width * 1.15, self.height * 1.15)))
-        self.sprites.append(pygame.transform.scale(pygame.image.load('Assets/guy_standing/guy_standing.png'),
-            (self.width * 1.15, self.height * 1.15)))
-        self.current_sprite = 0
-        self.image = self.sprites[self.current_sprite]
-
-        self.rect = self.image.get_rect()
-        self.rect.topleft = [x, y]
-
-    def animate(self):
-        self.is_animating = True
-
-    def update(self, speed) -> None:
-        if self.is_animating == True:
-            self.current_sprite += speed
-
-            if self.current_sprite >= len(self.sprites):
-                self.current_sprite = 0
-
-            self.image = self.sprites[int(self.current_sprite)]
-
-
 class Story:
     def __init__(self) -> None:
         pass
