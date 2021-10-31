@@ -14,7 +14,7 @@ def stage():
     objects = []
     moveable = []  # Each moveable object, basically mobs and player
     dialogable = [] # each object that we can have a dialog with
-    player = main.Wolf(100, 100, 100, 10, "Wolf")
+    player = main.Human(100, 100, 100, 10, "Human")
     moveable.append(player)
     objects.append(player)
     soil1 = main.Road(100, 500, "ground", 900, 50)
@@ -42,6 +42,11 @@ def stage():
                     dial.show_mob_dial(
                         "I was here since a long time ago", player, stage1
                     )
+                if event.key == pygame.K_t:
+                    player.change_state()
+                    player.animate_change_state()
+                    new_player = main.Wolf(player.get_x() + 10, player.get_y(), 100, player.get_bowe(), 'Human')
+                    #objects.append(new_player)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                     player.running_animation = False
@@ -63,7 +68,7 @@ def stage():
      
         stage1.update_screen(objects)
 
-        player.standing_animation = (not player.running_animation) & (not player.jumping_animation)
+        player.standing_animation = (not player.running_animation) & (not player.jumping_animation) & (not player.transforming_animation)
         if player.standing_animation:
             player.animate_stand(0.05)
 
