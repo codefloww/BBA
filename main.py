@@ -29,9 +29,11 @@ class Window:
         self.y = 0
         self.width = width
         self.height = height
-        self.audio = pygame.mixer.music.load(os.path.join('Assets', audio))
+        self.audio = pygame.mixer.music.load(os.path.join("Assets", audio))
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background = pygame.image.load(os.path.join('Assets', 'backgrounds',background))
+        self.background = pygame.image.load(
+            os.path.join("Assets", "backgrounds", background)
+        )
 
     def get_size(self):
         """
@@ -295,7 +297,7 @@ class Player:
                     for object in objects_unmoveable:
                         object.move(10)
                 self.animate_run(0.34)
-                #self.running_animation = False
+                # self.running_animation = False
 
             if keys_pressed[pygame.K_LEFT]:
                 self.standing_animation = False
@@ -307,8 +309,8 @@ class Player:
                     for object in objects_unmoveable:
                         object.move(-10)
                 self.animate_run(0.34)
-                #self.running_animation = False
-            
+                # self.running_animation = False
+
             if keys_pressed[pygame.K_UP]:
                 pygame.time.delay(15)
                 if stand == 1:
@@ -396,6 +398,11 @@ class Wolf(Player):
     def get_rigid(self):
         return self.rigid
 
+    def hit(self, mobs):
+        for mob in mobs:
+            if self.get_rigid().inflate(50, 50).colliderect(mob.get_rigid()):
+                mob.get_hit(self.damage)
+
 
 class Human(Player):
     """class to specify wolf's part of the main charecter
@@ -419,14 +426,16 @@ class Human(Player):
         self.jumping_animation = False
         self.standing_animation = False
         self.flip = False
-        self.running_sprites = [f'Assets/guy/guy_run{i}.png' for i in range(1, 5)]
+        self.running_sprites = [f"Assets/guy/guy_run{i}.png" for i in range(1, 5)]
         self.current_run_image = 0
         self.current_jump_image = 0
-        self.jumping_sprites = [f'Assets/guy/guy_jump{i}.png' for i in range(1, 7)]
+        self.jumping_sprites = [f"Assets/guy/guy_jump{i}.png" for i in range(1, 7)]
         self.current_stand_image = 0
         self.standing_sprites = [f'Assets/guy/guy_standing{i}.png' for i in range(1, 4)]
         self.running_wolf_sprites = [f'Assets/wolf_run/wolf_run{i}.png' for i in range(1, 5)]
         self.standing_wolf_sprites = [f'Assets/wolf_standing/wolf_standing{i}.png' for i in range(1, 3)]
+        self.standing_sprites = [f"Assets/guy/guy_standing{i}.png" for i in range(1, 4)]
+        self.damage = 10
 
     def get_image(self):
         return self.texture
@@ -448,15 +457,15 @@ class Human(Player):
         """
         self.x -= vel
         self.rigid = self.rigid.move(-1 * vel, 0)
-    
+
     def change_animation_state(self):
         self.running_animation = 1 - self.running_animation
 
     def animate_run(self, speed):
         if self.running_animation:
-            if self.direction == 'right':
+            if self.direction == "right":
                 self.flip = False
-            elif self.direction == 'left':
+            elif self.direction == "left":
                 self.flip = True
             self.current_run_image += speed
 
@@ -471,30 +480,44 @@ class Human(Player):
                 if self.current_run_image >= len(self.running_wolf_sprites):
                     self.current_run_image = 0
 
-                self.texture = pygame.transform.flip(pygame.transform.scale(
-                pygame.image.load(self.running_wolf_sprites[int(self.current_run_image)]), (self.width, self.height)),
-                self.flip, False)
+            self.texture = pygame.transform.flip(
+                pygame.transform.scale(
+                    pygame.image.load(
+                        self.running_sprites[int(self.current_run_image)]
+                    ),
+                    (self.width, self.height),
+                ),
+                self.flip,
+                False,
+            )
 
     def animate_jump(self, speed):
         if self.jumping_animation:
-            if self.direction == 'right':
+            if self.direction == "right":
                 self.flip = False
-            elif self.direction == 'left':
+            elif self.direction == "left":
                 self.flip = True
             self.current_jump_image += speed
 
             if self.current_jump_image >= len(self.jumping_sprites):
                 self.current_jump_image = 0
 
-            self.texture = pygame.transform.flip(pygame.transform.scale(
-            pygame.image.load(self.jumping_sprites[int(self.current_jump_image)]), (self.width, self.height)),
-            self.flip, False)
+            self.texture = pygame.transform.flip(
+                pygame.transform.scale(
+                    pygame.image.load(
+                        self.jumping_sprites[int(self.current_jump_image)]
+                    ),
+                    (self.width, self.height),
+                ),
+                self.flip,
+                False,
+            )
 
     def animate_stand(self, speed):
         if self.standing_animation:
-            if self.direction == 'right':
+            if self.direction == "right":
                 self.flip = False
-            elif self.direction == 'left':
+            elif self.direction == "left":
                 self.flip = True
             self.current_stand_image += speed
 
@@ -513,8 +536,6 @@ class Human(Player):
                 pygame.image.load(self.standing_wolf_sprites[int(self.current_stand_image)]), (self.width, self.height)),
                 self.flip, False)
 
-
-
     def animate(self):
         self.is_animating = True
 
@@ -527,12 +548,20 @@ class Human(Player):
 
             self.image = self.sprites[int(self.current_sprite)]
 
-    def dialog_possible(self,dialogable):
+    def dialog_possible(self, dialogable):
         available_dialog = 0
         for mob in dialogable:
-            if self.get_rigid().colliderect(mob.get_rigid().inflate(405,405)) and mob.dialogs:
-                available_dialog+=1
+            if (
+                self.get_rigid().colliderect(mob.get_rigid().inflate(405, 405))
+                and mob.dialogs
+            ):
+                available_dialog += 1
         return available_dialog
+
+    def hit(self, mobs):
+        for mob in mobs:
+            if self.get_rigid().inflate(401, 401).colliderect(mob.get_rigid()):
+                mob.get_hit(self.damage)
 
 
 
@@ -542,21 +571,24 @@ class Story:
 
 
 class Mobs:
-    def __init__(self,x,y,width,height,texture) -> None:
+    def __init__(self, x, y, width, height, texture) -> None:
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.rigid = pygame.Rect(self.x,self.y,self.width,self.height)
-        self.texture = pygame.transform.scale(pygame.image.load(os.path.join(
-            'Assets','Mobes',texture)),(self.width,self.height))
+        self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.texture = pygame.transform.scale(
+            pygame.image.load(os.path.join("Assets", "Mobes", texture)),
+            (self.width, self.height),
+        )
         self.dialogs = False
         self.alive = True
+        self.health = 20
 
-    def with_health(self,health):
+    def with_health(self, health):
         self.health = health
 
-    def with_damage(self,damage):
+    def with_damage(self, damage):
         self.damage = damage
 
     def get_hit(self, hit):
@@ -583,7 +615,7 @@ class Mobs:
         return self.rigid
 
     def get_image(self):
-        return self.texture 
+        return self.texture
 
     def dialogable(self):
         self.dialogs = True
@@ -596,7 +628,6 @@ class Mobs:
         """
         self.x -= vel
         self.rigid = self.rigid.move(-1 * vel, 0)
-
 
 
 class Road:
@@ -672,7 +703,7 @@ class Button:
         self.width = width
         self.height = height
         self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets",'buttons', background)),
+            pygame.image.load(os.path.join("Assets", "buttons", background)),
             (self.width, self.height),
         )
         self.x = x
@@ -684,13 +715,13 @@ class Button:
     def get_rigid(self):
         return self.rigid
 
-    def clicked(self, clicked_image,screen):
+    def clicked(self, clicked_image, screen):
         self.state = "active"
         self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join('Assets','buttons', clicked_image)),
+            pygame.image.load(os.path.join("Assets", "buttons", clicked_image)),
             (self.width, self.height),
         )
-        screen.screen.blit(self.background,(self.x,self.y))
+        screen.screen.blit(self.background, (self.x, self.y))
         pygame.time.delay(20)
         pygame.display.update()
 
@@ -722,10 +753,22 @@ class Dialog:
 
     def show_mob_dial(self, dial_text, player, stage):
         my_font = pygame.font.SysFont("comicsans", 40)
-        stage.screen.blit(self.texture, (player.get_x() - player.get_width() / 2, player.get_y() - player.get_height() - 10))
+        stage.screen.blit(
+            self.texture,
+            (
+                player.get_x() - player.get_width() / 2,
+                player.get_y() - player.get_height() - 10,
+            ),
+        )
         self.text = my_font.render(dial_text, True, (225, 255, 255))
         self.text = pygame.transform.scale(self.text, (self.width, self.height))
-        stage.screen.blit(self.text, (player.get_x() - player.get_width() / 2, player.get_y() - player.get_height() - 10))
+        stage.screen.blit(
+            self.text,
+            (
+                player.get_x() - player.get_width() / 2,
+                player.get_y() - player.get_height() - 10,
+            ),
+        )
         pygame.display.update()
         pygame.time.delay(4000)
 
