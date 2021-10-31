@@ -99,6 +99,13 @@ class Player:
         self.direction = None
         self.stand = 0
         self.alive = True
+        self.transform_h_to_w_sprites = ['Assets/transform_human_wolf/1standing_transformation.png',
+        'Assets/transform_human_wolf/2transformation_lightning.png',
+        'Assets/transform_human_wolf/3transformation_ball.png',
+        'Assets/transform_human_wolf/4transformation_wolf.png']
+        self.transform_w_to_h_sprites = os.listdir('Assets/transform_wolf_human')
+        self.current_transform_image = 0
+        self.transforming_animation = False
 
     def get_health(self):
         return self.health
@@ -128,6 +135,35 @@ class Player:
     def change_state(self):
         """changes state of player"""
         self.state = "Human" if self.state == "Wolf" else "Wolf"
+        self.transforming_animation = True
+
+    def animate_change_state(self):
+        if self.transforming_animation:
+            if self.state == 'Wolf':
+                while self.transforming_animation:
+                    pygame.time.delay(5)
+                    self.current_transform_image += 0.05
+
+                    if self.current_transform_image >= len(self.transform_h_to_w_sprites):
+                        self.transforming_animation = False
+                        break
+
+                    self.texture = pygame.transform.flip(pygame.transform.scale(
+                    pygame.image.load(self.transform_h_to_w_sprites[int(self.current_transform_image)]), (self.width, self.height)),
+                    self.flip, False)
+                    
+            if self.state == 'Human':
+                while self.transforming_animation:
+                    pygame.time.delay(5)
+                    self.current_transform_image += 0.05
+
+                    if self.current_transform_image >= len(self.transform_h_to_w_sprites):
+                        self.transforming_animation = False
+                        break
+
+                    self.texture = pygame.transform.flip(pygame.transform.scale(
+                    pygame.image.load(self.transform_h_to_w_sprites[int(self.current_transform_image)]), (self.width, self.height)),
+                    self.flip, False)
 
     def get_x(self):
         return self.x
@@ -144,7 +180,7 @@ class Player:
     def jump(self, objects, screen):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
-        if self.state == "Wolf":
+        if self.state == "Human":
             delta = 150
             starting_y = self.get_y()
             if self.direction == "right":
@@ -194,13 +230,13 @@ class Player:
                     delta -= 15
                     screen.update_screen(objects)
 
-        elif self.state == "Human":
+        elif self.state == "Wolf":
             self.y -= 5
 
     def movement_handle(self, keys_pressed, objects, stand, screen, walls_collision):
         objects_unmoveable = objects.copy()
         objects_unmoveable.remove(self)
-        if self.state == "Wolf":
+        if self.state == "Human":
             if keys_pressed[pygame.K_RIGHT]:
                 self.standing_animation = False
                 self.running_animation = True
@@ -236,7 +272,7 @@ class Player:
                 # self.jumping_animation = False
 
 
-class Human(Player):
+class Wolf(Player):
     """class to specify human's part of the main charecter
 
     Args:
@@ -251,7 +287,7 @@ class Human(Player):
         self.width = 100
         self.height = 100
         self.texture = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", "guy", "guy_standing.png")),
+            pygame.image.load(os.path.join('Assets', 'wolf_standing', 'wolf_standing_final.png')),
             (self.width, self.height),
         )
         self.rigid = pygame.Rect(self.x, self.y, self.width, self.height)
@@ -283,7 +319,7 @@ class Human(Player):
                 mob.get_hit(self.damage)
 
 
-class Wolf(Player):
+class Human(Player):
     """class to specify wolf's part of the main charecter
 
     Args:
@@ -429,6 +465,7 @@ class Wolf(Player):
         for mob in mobs:
             if self.get_rigid().inflate(401, 401).colliderect(mob.get_rigid()):
                 mob.get_hit(self.damage)
+
 
 
 class Story:

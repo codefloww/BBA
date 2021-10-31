@@ -13,9 +13,9 @@ def stage():
     running = True
     objects = []
     moveable = []  # Each moveable object, basically mobs and player
-    dialogable = []  # each object that we can have a dialog with
+    dialogable = [] # each object that we can have a dialog with
     mobs = []
-    player = main.Wolf(100, 100, 100, 10, "Wolf")
+    player = main.Human(100, 100, 100, 10, "Human")
     moveable.append(player)
     objects.append(player)
     soil1 = main.Road(0, 500, "ground", 900, 50)
@@ -46,6 +46,11 @@ def stage():
                     )
                 if event.key == pygame.K_f:
                     player.hit(mobs)
+                if event.key == pygame.K_t:
+                    player.change_state()
+                    player.animate_change_state()
+                    new_player = main.Wolf(player.get_x() + 10, player.get_y(), 100, player.get_bowe(), 'Human')
+                    #objects.append(new_player)
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                     player.running_animation = False
