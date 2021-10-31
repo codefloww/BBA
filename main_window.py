@@ -5,7 +5,7 @@ import os
 
 def menu():
     pygame.mixer.init()
-    main_menu = main.Window(1920, 1080, "Enter.mp3", "background.png")
+    main_menu = main.Window(1920, 1080, "Enter.mp3", "background.jpg")
     main_menu.play_audio("start")
     running = True
     objects = []
@@ -29,6 +29,12 @@ def menu():
                             button.clicked(BUTTON_IMAGES[button.get_caption()][1],main_menu)
                             running = False
                             return button.get_caption()
+
+        clock = pygame.time.Clock()
+        clock.tick(120)
+        if 1:
+            pygame.time.delay(1)
+            main_menu.move_background(0.5)
 
         main_menu.update_screen(objects)
 

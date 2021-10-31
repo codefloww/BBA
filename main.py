@@ -298,12 +298,12 @@ class Wolf(Player):
         self.jumping_animation = False
         self.standing_animation = False
         self.flip = False
-        self.running_sprites = [f'Assets/guy_run/guy_run{i}.png' for i in range(1, 5)]
+        self.running_sprites = [f'Assets/guy/guy_run{i}.png' for i in range(1, 5)]
         self.current_run_image = 0
         self.current_jump_image = 0
-        self.jumping_sprites = [f'Assets/guy_jump/guy_jump{i}.png' for i in range(1, 7)]
+        self.jumping_sprites = [f'Assets/guy/guy_jump{i}.png' for i in range(1, 7)]
         self.current_stand_image = 0
-        self.standing_sprites = [f'Assets/guy_standing/guy_standing{i}.png' for i in range(1, 4)]
+        self.standing_sprites = [f'Assets/guy/guy_standing{i}.png' for i in range(1, 4)]
         
     def get_image(self):
         return self.texture
