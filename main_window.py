@@ -5,13 +5,14 @@ import os
 
 def menu():
     pygame.mixer.init()
-    main_menu = main.Window(1920, 1080, "Enter.mp3", "space.png")
+    main_menu = main.Window(1920, 1080, "Enter.mp3", "background.png")
     main_menu.play_audio("start")
     running = True
     objects = []
-    BUTTON_PLAY = main.Button(200, 100, "space.png", 860, 400, "PLAY")
-    BUTTON_EXIT = main.Button(200, 100, "space.png", 860, 550, "EXIT")
-    BUTTON_ABOUT_US = main.Button(200, 100, "space.png", 860, 700, "ABOUT US")
+    BUTTON_IMAGES = {'PLAY':('startgame1.jpg','startgame2.jpg'),'EXIT':('exit1.jpg','exit2.jpg'),'ABOUTUS':('aboutus1.jpg','aboutus2.jpg')}
+    BUTTON_PLAY = main.Button(200, 100, BUTTON_IMAGES["PLAY"][0], 860, 400, "PLAY")
+    BUTTON_EXIT = main.Button(200, 100, BUTTON_IMAGES["EXIT"][0], 860, 550, "EXIT")
+    BUTTON_ABOUT_US = main.Button(200, 100,BUTTON_IMAGES["ABOUTUS"][0], 860, 700, "ABOUTUS")
     objects.append(BUTTON_PLAY)
     objects.append(BUTTON_EXIT)
     objects.append(BUTTON_ABOUT_US)
@@ -25,7 +26,7 @@ def menu():
                     pos = pygame.mouse.get_pos()
                     for button in objects:
                         if button.get_rigid().collidepoint(pos):
-                            button.clicked("space.png")
+                            button.clicked(BUTTON_IMAGES[button.get_caption()][1])
                             running = False
                             return button.get_caption()
 

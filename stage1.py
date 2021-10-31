@@ -16,7 +16,7 @@ def stage():
     player = main.Wolf(100, 100, 100, 10, "Wolf")
     moveable.append(player)
     objects.append(player)
-    soil1 = main.Road(100, 500, "ground", 500, 50)
+    soil1 = main.Road(100, 500, "ground", 900, 50)
     soil2 = main.Road(300, 400, "ground", 100, 300)
     objects.append(soil1)
     objects.append(soil2)
@@ -42,8 +42,6 @@ def stage():
         for entity in moveable:
             stage1.update_screen(objects)
             stand = 0
-            objects_unmoveable = objects.copy()
-            objects_unmoveable.remove(entity)
             wall_collision = physics.stutter(entity, objects)
 
             while stand == 0 and entity.alive:

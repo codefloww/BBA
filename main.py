@@ -29,9 +29,9 @@ class Window:
         self.y = 0
         self.width = width
         self.height = height
-        self.audio = pygame.mixer.music.load(os.path.join("Assets", audio))
+        self.audio = pygame.mixer.music.load(os.path.join('Assets', audio))
         self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background = pygame.image.load(os.path.join("Assets", background))
+        self.background = pygame.image.load(os.path.join('Assets', 'backgrounds',background))
 
     def get_size(self):
         """
@@ -386,7 +386,7 @@ class Button:
         self.width = width
         self.height = height
         self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", background)),
+            pygame.image.load(os.path.join("Assets",'buttons', background)),
             (self.width, self.height),
         )
         self.x = x
@@ -401,7 +401,7 @@ class Button:
     def clicked(self, clicked_image):
         self.state = "active"
         self.background = pygame.transform.scale(
-            pygame.image.load(os.path.join("Assets", clicked_image)),
+            pygame.image.load(os.path.join('Assets','buttons', clicked_image)),
             (self.width, self.height),
         )
 
